@@ -47,3 +47,17 @@ else:
 
 - Improve error handling by creating Exceptions
 - Add functions to move S3 objects
+
+---
+
+## Acknowledgement
+
+The idea from these functions come from an amazing team that I worked with. This repo is a refactor and documentation to make this public to everyone.
+
+Many thanks to:
+
+- [Anabela Nogueira](https://www.linkedin.com/in/abnogueira/)
+- [Carlos Alves](https://www.linkedin.com/in/carlosmalves/)
+- [João Machado](https://www.linkedin.com/in/machadojpf/)
+- [Renato Dantas](https://www.linkedin.com/in/renatomoura/)
+- [Ricardo Garcia](https://www.linkedin.com/in/ricardo-g-oliveira/)
