@@ -1,4 +1,4 @@
-"""Upload Files Module."""
+"""Upload files to S3 bucket."""
 from concurrent import futures
 from pathlib import Path
 from typing import (

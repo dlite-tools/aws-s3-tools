@@ -1,4 +1,4 @@
-"""Write Objects Model."""
+"""Write variables into S3 objects."""
 import json
 from typing import Dict
 

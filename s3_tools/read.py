@@ -1,4 +1,4 @@
-"""Read Objects Module."""
+"""Read S3 objects into variables."""
 from typing import (
     Dict,
     Optional

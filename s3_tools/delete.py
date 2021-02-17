@@ -1,4 +1,4 @@
-"""Delete Objects Module."""
+"""Delete objects from S3 bucket."""
 from typing import (
     List,
     Optional

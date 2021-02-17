@@ -1,4 +1,4 @@
-"""Download Objects Module."""
+"""Download S3 objects to files."""
 from concurrent import futures
 from pathlib import Path
 from typing import (
