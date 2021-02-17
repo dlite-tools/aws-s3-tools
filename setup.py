@@ -7,7 +7,7 @@ exclude_packages = ["tests", "tests.*"]
 
 setup(
     name="aws-s3-tools",
-    version="0.0.1",
+    version="0.0.2",
     packages=find_packages(exclude=exclude_packages),
     author="Daniel Ferrari",
     description="AWS S3 tools package.",
