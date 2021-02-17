@@ -34,10 +34,10 @@ def upload_file_to_key(bucket: str, key: str, local_filename: str) -> str:
     Examples
     --------
     >>> write_object_from_file(
-            bucket="myBucket",
-            key="myFiles/music.mp3",
-            local_filename="files/music.mp3"
-        )
+    ...     bucket="myBucket",
+    ...     key="myFiles/music.mp3",
+    ...     local_filename="files/music.mp3"
+    ... )
     http://s3.amazonaws.com/myBucket/myFiles/music.mp3
 
     """
@@ -76,13 +76,13 @@ def upload_files_to_keys(
     Examples
     --------
     >>> upload_files_to_keys(
-            bucket="myBucket",
-            paths_keys=[
-                ("MyFiles/myFile.data", "myData/myFile.data"),
-                ("MyFiles/myMusic/awesome.mp3", "myData/myMusic/awesome.mp3"),
-                ("MyFiles/myDocs/paper.doc", "myData/myDocs/paper.doc")
-            ]
-        )
+    ...     bucket="myBucket",
+    ...     paths_keys=[
+    ...         ("MyFiles/myFile.data", "myData/myFile.data"),
+    ...         ("MyFiles/myMusic/awesome.mp3", "myData/myMusic/awesome.mp3"),
+    ...         ("MyFiles/myDocs/paper.doc", "myData/myDocs/paper.doc")
+    ...     ]
+    ... )
     [
         ("MyFiles/myMusic/awesome.mp3", "myData/myMusic/awesome.mp3", True),
         ("MyFiles/myDocs/paper.doc", "myData/myDocs/paper.doc", True),
@@ -145,10 +145,10 @@ def upload_folder_to_prefix(
     Examples
     --------
     >>> upload_folder_to_prefix(
-            bucket="myBucket",
-            prefix="myFiles",
-            folder="/usr/files",
-        )
+    ...     bucket="myBucket",
+    ...     prefix="myFiles",
+    ...     folder="/usr/files",
+    ... )
     [
         ("/usr/files/music.mp3", "myFiles/music.mp3", True),
         ("/usr/files/awesome.wav", "myFiles/awesome.wav", True),

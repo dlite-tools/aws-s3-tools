@@ -89,13 +89,13 @@ def delete_keys(bucket: str, keys: List[str], dry_run: bool = True) -> None:
     Examples
     --------
     >>> delete_keys(
-        bucket="myBucket",
-        keys=[
-            "myData/myMusic/awesome.mp3",
-            "myData/myDocs/paper.doc"
-        ],
-        dry_run=False
-    )
+    ...     bucket="myBucket",
+    ...     keys=[
+    ...         "myData/myMusic/awesome.mp3",
+    ...         "myData/myDocs/paper.doc"
+    ...     ],
+    ...     dry_run=False
+    ... )
 
     """
     if dry_run:

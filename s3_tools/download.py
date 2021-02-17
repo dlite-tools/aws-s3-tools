@@ -36,10 +36,10 @@ def download_key_to_file(bucket: str, key: str, local_filename: str) -> bool:
     Examples
     --------
     >>> read_object_to_file(
-            bucket="myBucket",
-            key="myData/myFile.data",
-            local_filename="theFile.data"
-        )
+    ...     bucket="myBucket",
+    ...     key="myData/myFile.data",
+    ...     local_filename="theFile.data"
+    ... )
     True
 
     """
@@ -79,13 +79,13 @@ def download_keys_to_files(
     Examples
     --------
     >>> download_keys_to_files(
-            bucket="myBucket",
-            keys_paths=[
-                ("myData/myFile.data", "MyFiles/myFile.data"),
-                ("myData/myMusic/awesome.mp3", "MyFiles/myMusic/awesome.mp3"),
-                ("myData/myDocs/paper.doc", "MyFiles/myDocs/paper.doc")
-            ]
-        )
+    ...     bucket="myBucket",
+    ...     keys_paths=[
+    ...         ("myData/myFile.data", "MyFiles/myFile.data"),
+    ...         ("myData/myMusic/awesome.mp3", "MyFiles/myMusic/awesome.mp3"),
+    ...         ("myData/myDocs/paper.doc", "MyFiles/myDocs/paper.doc")
+    ...     ]
+    ... )
     [
         ("myData/myMusic/awesome.mp3", "MyFiles/myMusic/awesome.mp3", True),
         ("myData/myDocs/paper.doc", "MyFiles/myDocs/paper.doc", True),
@@ -150,10 +150,10 @@ def download_prefix_to_folder(
     Examples
     --------
     >>> download_prefix_to_folder(
-            bucket="myBucket",
-            prefix="myData",
-            folder="myFiles"
-        )
+    ...     bucket="myBucket",
+    ...     prefix="myData",
+    ...     folder="myFiles"
+    ... )
     [
         ("myData/myFile.data", "MyFiles/myFile.data", True),
         ("myData/myMusic/awesome.mp3", "MyFiles/myMusic/awesome.mp3", True),
