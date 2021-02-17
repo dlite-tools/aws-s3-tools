@@ -61,3 +61,4 @@ Many thanks to:
 - [João Machado](https://www.linkedin.com/in/machadojpf/)
 - [Renato Dantas](https://www.linkedin.com/in/renatomoura/)
 - [Ricardo Garcia](https://www.linkedin.com/in/ricardo-g-oliveira/)
+- [Tomás Osório](https://www.linkedin.com/in/tomas-osorio/)
