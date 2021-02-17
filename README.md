@@ -4,40 +4,46 @@
 ![Package Version](https://img.shields.io/pypi/v/aws-s3-tools)
 ![Python Version](https://img.shields.io/pypi/pyversions/aws-s3-tools)
 
-- [Install](#install)
-- [TO-DO](#to-do)
+AWS S3 Tools is a Python package to make it easier to deal with S3 objects, where you can:
+
+- List S3 buckets' content
+- Check if S3 objects exist
+- Read from S3 objects to Python variables
+- Write from Python variables to S3 objects
+- Upload from local files to S3
+- Download from S3 to local files
+- Delete S3 objects
+
+The AWS authentication is done via boto3 package, [click here to know more about it](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html).
 
 ---
 
-Python package for AWS S3 functionalities to have a clear code around `boto3` methods. The authentication is done by boto3 package, [to know more](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html).
+## Installation
+
+You can install AWS S3 Tools from PyPi with `pip` or your favorite package manager:
+
+    pip install aws-s3-tools
+
+Add the ``-U`` switch to update to the current version, if AWS S3 Tools is already installed.
 
 ---
 
-## Install
+## Usage
 
-You can use `pip` to install:
+[The full documentation can be found here]().
 
-```shell
-pip3 install aws-s3-tools
+```python
+from s3_tools import object_exists
+
+if object_exists("my-bucket", "s3-prefix/object.data"):
+    # Do magic
+else:
+    print("Object not found")
 ```
 
-You can install directly from Github:
+---
 
-```shell
-pip3 install --user git+https://github.com/FerrariDG/aws-s3-tools.git
-```
+## Next Steps
 
-Or you can clone the repository:
-
-```shell
-pip3 install --user <full path to>/aws-s3-tools
-```
-
---
-
-## TO-DO
-
-- Add automatic doc generation from docstrings
-- S3 Functions:
-  - Improve error handling by creating Exceptions
-  - Add functions to move objects
+- Improve error handling by creating Exceptions
+- Add functions to move S3 objects
