@@ -30,16 +30,16 @@ Add the ``-U`` switch to update to the current version, if AWS S3 Tools is alrea
 
 ## Usage
 
-[The full documentation can be found here]().
+[The full documentation can be found here](https://aws-s3-tools.readthedocs.io/en/latest/index.html).
 
-```python
-from s3_tools import object_exists
+    ```python
+        from s3_tools import object_exists
 
-if object_exists("my-bucket", "s3-prefix/object.data"):
-    # Do magic
-else:
-    print("Object not found")
-```
+        if object_exists("my-bucket", "s3-prefix/object.data"):
+            # Do magic
+        else:
+            print("Object not found")
+    ```
 
 ---
 
