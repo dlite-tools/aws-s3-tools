@@ -1,4 +1,4 @@
-"""Write Objects Model."""
+"""Write variables into S3 objects."""
 import json
 from typing import Dict
 
@@ -33,10 +33,10 @@ def write_object_from_bytes(bucket: str, key: str, data: bytes) -> str:
     --------
     >>> data = bytes("String to bytes", "utf-8")
     >>> write_object_from_bytes(
-            bucket="myBucket",
-            key="myFiles/file.data",
-            data=data
-        )
+    ...     bucket="myBucket",
+    ...     key="myFiles/file.data",
+    ...     data=data
+    ... )
     http://s3.amazonaws.com/myBucket/myFiles/file.data
 
     """
@@ -77,10 +77,10 @@ def write_object_from_text(bucket: str, key: str, data: str) -> str:
     --------
     >>> data = "A very very not so long text"
     >>> write_object_from_text(
-            bucket="myBucket",
-            key="myFiles/file.txt",
-            data=data
-        )
+    ...     bucket="myBucket",
+    ...     key="myFiles/file.txt",
+    ...     data=data
+    ... )
     http://s3.amazonaws.com/myBucket/myFiles/file.txt
 
     """
@@ -118,10 +118,10 @@ def write_object_from_dict(bucket: str, key: str, data: Dict) -> str:
     --------
     >>> data = {"key": "value", "1": "text"}
     >>> write_object_from_dict(
-            bucket="myBucket",
-            key="myFiles/file.json",
-            data=data
-        )
+    ...     bucket="myBucket",
+    ...     key="myFiles/file.json",
+    ...     data=data
+    ... )
     http://s3.amazonaws.com/myBucket/myFiles/file.json
 
     """

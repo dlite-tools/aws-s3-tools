@@ -1,4 +1,4 @@
-"""List Objects Module."""
+"""List S3 bucket objects."""
 from typing import Optional
 
 import fnmatch

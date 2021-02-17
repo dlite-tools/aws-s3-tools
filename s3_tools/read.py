@@ -1,4 +1,4 @@
-"""Read Objects Module."""
+"""Read S3 objects into variables."""
 from typing import (
     Dict,
     Optional
@@ -27,9 +27,9 @@ def read_object_to_bytes(bucket: str, key: str) -> Optional[bytes]:
     Examples
     --------
     >>> read_object_to_bytes(
-            bucket="myBucket",
-            key="myData/myFile.data"
-        )
+    ...     bucket="myBucket",
+    ...     key="myData/myFile.data"
+    ... )
     b"The file content"
 
     """
@@ -60,9 +60,9 @@ def read_object_to_text(bucket: str, key: str) -> Optional[str]:
     Examples
     --------
     >>> read_object_to_text(
-            bucket="myBucket",
-            key="myData/myFile.data"
-        )
+    ...     bucket="myBucket",
+    ...     key="myData/myFile.data"
+    ... )
     "The file content"
 
     """
@@ -89,9 +89,9 @@ def read_object_to_dict(bucket: str, key: str) -> Optional[Dict]:
     Examples
     --------
     >>> read_object_to_dict(
-            bucket="myBucket",
-            key="myData/myFile.json"
-        )
+    ...     bucket="myBucket",
+    ...     key="myData/myFile.json"
+    ... )
     {"key": "value", "1": "text"}
 
     """

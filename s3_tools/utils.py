@@ -1,4 +1,4 @@
-"""General Utilities Module."""
+"""General utilities."""
 from typing import Any
 from concurrent import futures
 

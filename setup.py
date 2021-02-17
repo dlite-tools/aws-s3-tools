@@ -14,6 +14,9 @@ setup(
     license="MIT",
     keywords="aws s3 tools package",
     url="https://github.com/FerrariDG/aws-s3-tools",
+    projects_urls={
+        "Documentation": ""
+    },
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",

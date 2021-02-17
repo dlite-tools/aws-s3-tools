@@ -13,6 +13,8 @@ mypy = "*"
 pydocstyle = "*"
 pytest = "*"
 pytest-cov = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
 twine = "*"
 ujson = "*"
 
