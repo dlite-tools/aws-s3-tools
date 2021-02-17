@@ -15,7 +15,7 @@ setup(
     keywords="aws s3 tools package",
     url="https://github.com/FerrariDG/aws-s3-tools",
     projects_urls={
-        "Documentation": ""
+        "Documentation": "https://aws-s3-tools.readthedocs.io/en/latest/index.html"
     },
     classifiers=[
         "Development Status :: 4 - Beta",
