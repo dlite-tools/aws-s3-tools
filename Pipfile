@@ -6,17 +6,17 @@ verify_ssl = true
 [packages]
 
 [dev-packages]
-boto3 = "*"
-flake8 = "*"
-moto = "*"
-mypy = "*"
-pydocstyle = "*"
-pytest = "*"
-pytest-cov = "*"
-sphinx = "*"
-sphinx-rtd-theme = "*"
-twine = "*"
-ujson = "*"
+boto3 = "==1.17.8"
+flake8 = "==3.8.4"
+moto = "==1.3.16"
+mypy = "==0.800"
+pydocstyle = "==5.1.1"
+pytest = "==6.2.2"
+pytest-cov = "==2.11.1"
+sphinx = "==3.5.1"
+sphinx-rtd-theme = "==0.5.1"
+twine = "==3.3.0"
+ujson = "==4.0.2"
 
 [requires]
 python_version = "3.8"
