@@ -13,6 +13,7 @@ from s3_tools import (
 
 from tests.unit.conftest import (
     BUCKET_NAME,
+    EMPTY_FILE,
     FILENAME,
     create_bucket,
     create_files
@@ -35,6 +36,15 @@ class TestUpload:
         with create_bucket(s3_client, BUCKET_NAME):
             before = object_exists(BUCKET_NAME, self.key)
             upload_file_to_key(BUCKET_NAME, self.key, FILENAME)
+            after = object_exists(BUCKET_NAME, self.key)
+
+        assert before is False
+        assert after is True
+
+    def test_upload_empty_file(self, s3_client):
+        with create_bucket(s3_client, BUCKET_NAME):
+            before = object_exists(BUCKET_NAME, self.key)
+            upload_file_to_key(BUCKET_NAME, self.key, EMPTY_FILE)
             after = object_exists(BUCKET_NAME, self.key)
 
         assert before is False
