@@ -11,7 +11,8 @@ from s3_tools import (
 
 from tests.unit.conftest import (
     BUCKET_NAME,
-    create_bucket
+    create_bucket,
+    EMPTY_FILE
 )
 
 
@@ -34,6 +35,14 @@ class TestRead:
                 error = e.response["Error"]["Code"]
 
         assert error == "NoSuchKey"
+
+    def test_read_from_empty_bytes(self, s3_client):
+        expected_obj = bytes()
+
+        with create_bucket(s3_client, BUCKET_NAME, keys_paths=[(self.key, EMPTY_FILE)]):
+            obj = read_object_to_bytes(BUCKET_NAME, self.key)
+
+        assert expected_obj == obj
 
     def test_read_to_bytes(self, s3_client):
         expected_obj = bytes("Just a test string converted to bytes", "utf-8")
