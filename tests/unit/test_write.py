@@ -27,6 +27,16 @@ class TestWrite:
 
         assert error == "NoSuchBucket"
 
+    def test_write_from_empty_bytes(self, s3_client):
+        obj = bytes()
+
+        with create_bucket(s3_client, BUCKET_NAME):
+            url = write_object_from_bytes(BUCKET_NAME, self.key, obj)
+            exists = object_exists(BUCKET_NAME, self.key)
+
+        assert url == f"https://s3.amazonaws.com/{BUCKET_NAME}/{self.key}"
+        assert exists is True
+
     def test_write_from_bytes(self, s3_client):
         obj = bytes("Just a test string converted to bytes", 'utf-8')
 
