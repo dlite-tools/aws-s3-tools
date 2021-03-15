@@ -13,6 +13,7 @@ from s3_tools import (
 
 from tests.unit.conftest import (
     BUCKET_NAME,
+    EMPTY_FILE,
     FILENAME,
     create_bucket,
     create_files
@@ -47,6 +48,18 @@ class TestDownload:
             after = Path(self.fn_test).exists()
 
         Path(self.fn_test).unlink()
+        assert before is False
+        assert after is True
+        assert response is True
+
+    def test_download_empty_object(self, s3_client):
+        empty = EMPTY_FILE + ".tests"
+        with create_bucket(s3_client, BUCKET_NAME, keys_paths=[(self.key, EMPTY_FILE)]):
+            before = Path(empty).exists()
+            response = download_key_to_file(BUCKET_NAME, self.key, empty)
+            after = Path(empty).exists()
+
+        Path(empty).unlink()
         assert before is False
         assert after is True
         assert response is True
