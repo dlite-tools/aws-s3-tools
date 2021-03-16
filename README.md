@@ -13,6 +13,7 @@ AWS S3 Tools is a Python package to make it easier to deal with S3 objects, wher
 - Upload from local files to S3
 - Download from S3 to local files
 - Delete S3 objects
+- Move S3 objects
 
 The AWS authentication is done via boto3 package, [click here to know more about it](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html).
 
@@ -32,21 +33,20 @@ Add the ``-U`` switch to update to the current version, if AWS S3 Tools is alrea
 
 [The full documentation can be found here](https://aws-s3-tools.readthedocs.io/en/latest/index.html).
 
-```python
-from s3_tools import object_exists
+    ```python
+    from s3_tools import object_exists
 
-if object_exists("my-bucket", "s3-prefix/object.data"):
-    # Do magic
-else:
-    print("Object not found")
-```
+    if object_exists("my-bucket", "s3-prefix/object.data"):
+        # Do magic
+    else:
+        print("Object not found")
+    ```
 
 ---
 
 ## Next Steps
 
 - Improve error handling by creating Exceptions
-- Add functions to move S3 objects
 
 ---
 
