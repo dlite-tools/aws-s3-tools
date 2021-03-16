@@ -11,6 +11,11 @@ from .download import (
     download_prefix_to_folder
 )
 
+from .move import (
+    move_keys,
+    move_object
+)
+
 from .list import (
     list_objects
 )
