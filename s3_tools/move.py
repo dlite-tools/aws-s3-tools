@@ -72,6 +72,13 @@ def move_keys(
     threads : int, optional
         Number of parallel uploads, by default 5.
 
+    Raises
+    ------
+    IndexError
+        When the source_keys and destination_keys have different length.
+    ValueError
+        When the keys list is empty.
+
     Examples
     --------
     >>> move_keys(

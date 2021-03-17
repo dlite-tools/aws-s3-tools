@@ -21,6 +21,11 @@ def read_object_to_bytes(bucket: str, key: str) -> bytes:
     bytes
         Object content as bytes.
 
+    Raises
+    ------
+    KeyError
+        When the key 'Body' is missing on the response.
+
     Examples
     --------
     >>> read_object_to_bytes(
