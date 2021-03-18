@@ -60,13 +60,13 @@ def move_keys(
     source_bucket : str
         S3 bucket where the objects are stored.
 
-    source_key : List[str]
+    source_keys : List[str]
         S3 keys where the objects are referenced.
 
     destination_bucket : str
         S3 destination bucket.
 
-    destination_key : List[str]
+    destination_keys : List[str]
         S3 destination keys.
 
     threads : int, optional
