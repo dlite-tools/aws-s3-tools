@@ -12,6 +12,7 @@ from moto import mock_s3
 
 BUCKET_NAME = "mock"
 FILENAME = "tests/resources/mock_file.csv"
+EMPTY_FILE = "tests/resources/empty.data"
 
 
 @pytest.fixture(scope="module")

@@ -10,6 +10,7 @@ AWS S3 Tools is a Python package to make it easier to deal with S3 objects, wher
 - Upload from local files to S3
 - Download from S3 to local files
 - Delete S3 objects
+- Move S3 objects
 
 The AWS authentication is done via boto3 package, `click here <https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html>`_.
 

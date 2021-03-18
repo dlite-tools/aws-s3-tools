@@ -7,7 +7,7 @@ exclude_packages = ["tests", "tests.*"]
 
 setup(
     name="aws-s3-tools",
-    version="0.0.2",
+    version="0.0.3",
     packages=find_packages(exclude=exclude_packages),
     author="Daniel Ferrari",
     description="AWS S3 tools package.",
@@ -15,6 +15,7 @@ setup(
     keywords="aws s3 tools package",
     url="https://github.com/FerrariDG/aws-s3-tools",
     projects_urls={
+        "Source": "https://github.com/FerrariDG/aws-s3-tools",
         "Documentation": "https://aws-s3-tools.readthedocs.io/en/latest/index.html"
     },
     classifiers=[

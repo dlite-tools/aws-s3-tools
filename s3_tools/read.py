@@ -1,14 +1,11 @@
 """Read S3 objects into variables."""
-from typing import (
-    Dict,
-    Optional
-)
+from typing import Dict
 
 import boto3
 import ujson
 
 
-def read_object_to_bytes(bucket: str, key: str) -> Optional[bytes]:
+def read_object_to_bytes(bucket: str, key: str) -> bytes:
     """Retrieve one object from AWS S3 bucket as a byte array.
 
     Parameters
@@ -24,6 +21,11 @@ def read_object_to_bytes(bucket: str, key: str) -> Optional[bytes]:
     bytes
         Object content as bytes.
 
+    Raises
+    ------
+    KeyError
+        When the key 'Body' is missing on the response.
+
     Examples
     --------
     >>> read_object_to_bytes(
@@ -36,12 +38,14 @@ def read_object_to_bytes(bucket: str, key: str) -> Optional[bytes]:
     session = boto3.session.Session()
     s3 = session.client("s3")
     obj = s3.get_object(Bucket=bucket, Key=key)
-    data = obj["Body"].read() if "Body" in obj else None
 
-    return data
+    if "Body" not in obj:
+        raise KeyError("Missing key 'Body' on response")
+
+    return obj["Body"].read()
 
 
-def read_object_to_text(bucket: str, key: str) -> Optional[str]:
+def read_object_to_text(bucket: str, key: str) -> str:
     """Retrieve one object from AWS S3 bucket as a string.
 
     Parameters
@@ -67,10 +71,10 @@ def read_object_to_text(bucket: str, key: str) -> Optional[str]:
 
     """
     data = read_object_to_bytes(bucket, key)
-    return data.decode("utf-8") if data else None
+    return data.decode("utf-8")
 
 
-def read_object_to_dict(bucket: str, key: str) -> Optional[Dict]:
+def read_object_to_dict(bucket: str, key: str) -> Dict:
     """Retrieve one object from AWS S3 bucket as a dictionary.
 
     Parameters
@@ -96,4 +100,4 @@ def read_object_to_dict(bucket: str, key: str) -> Optional[Dict]:
 
     """
     data = read_object_to_bytes(bucket, key)
-    return ujson.loads(data.decode("utf-8")) if data else None
+    return ujson.loads(data.decode("utf-8"))

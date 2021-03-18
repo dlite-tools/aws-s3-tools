@@ -39,6 +39,11 @@ def object_exists(bucket: str, key: str) -> bool:
     -------
     bool
         True if the object exists, otherwise False.
+
+    Example
+    -------
+    >>> object_exists("myBucket", "myFiles/music.mp3")
+    True
     """
     session = boto3.session.Session()
     s3 = session.client("s3")

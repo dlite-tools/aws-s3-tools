@@ -7,6 +7,7 @@ AWS S3 Modules
    delete.rst
    download.rst
    list.rst
+   move.rst
    read.rst
    upload.rst
    utils.rst
