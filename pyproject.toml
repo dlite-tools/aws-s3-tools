@@ -1,0 +1,54 @@
+[tool.poetry]
+name = "aws-s3-tools"
+version = "0.0.3"
+description = "AWS S3 tools package"
+authors = ["Daniel Ferrari"]
+maintainers = [
+    "Carlos Alves",
+    "Daniel Ferrari"
+]
+license = "MIT"
+
+readme = "README.md"
+
+packages = [
+    { include = "s3_tools" }
+]
+
+repository = "https://github.com/FerrariDG/aws-s3-tools"
+documentation = "https://aws-s3-tools.readthedocs.io/en/latest/index.html"
+
+keywords = ["aws", "s3", "tools", "package"]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: Freely Distributable",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities"
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+boto3 = "^1.16.51"
+ujson = "^4.0.1"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.8.4"
+moto = "^1.3.16"
+mypy = "^0.800"
+pydocstyle = "^5.1.1"
+pytest = "^6.2.2"
+pytest-cov = "^2.11.1"
+sphinx = "^3.5.1"
+sphinx-rtd-theme = "^0.5.1"
+
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
