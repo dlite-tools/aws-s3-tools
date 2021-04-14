@@ -57,6 +57,10 @@ Add the ``-U`` switch to update to the current version, if AWS S3 Tools is alrea
 All contributions, bug reports, bug fixes, documentation improvements,
 enhancements and ideas are welcome.
 
+A detailed overview on how to contribute can be found in the
+[contributing guide](CONTRIBUTING.md)
+on GitHub.
+
 ---
 
 ## Issues
