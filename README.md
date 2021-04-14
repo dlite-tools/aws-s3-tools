@@ -51,6 +51,26 @@ Add the ``-U`` switch to update to the current version, if AWS S3 Tools is alrea
 
 ---
 
+## Contributions
+
+All contributions, bug reports, bug fixes, documentation improvements,
+enhancements and ideas are welcome.
+
+---
+
+## Issues
+
+Go [here](https://github.com/FerrariDG/aws-s3-tools/issues) to submit feature
+requests or bugfixes.
+
+---
+
+## License and Credits
+
+`AWS S3 Tools` is licensed under the [MIT license](LICENSE) and is written and
+maintained by Daniel Ferrari ([@FerrariDG](https://github.com/FerrariDG)) and Carlos Alves ([@cmalves](https://github.com/cmalves))
+
+---
 ## Acknowledgement
 
 The idea from these functions come from an amazing team that I worked with. This repo is a refactor and documentation to make this public to everyone.
