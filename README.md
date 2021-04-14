@@ -1,6 +1,7 @@
 # AWS S3 Tools
 
 ![MIT License](https://img.shields.io/pypi/l/aws-s3-tools)
+[![Test](https://github.com/FerrariDG/aws-s3-tools/actions/workflows/test.yml/badge.svg)](https://github.com/FerrariDG/aws-s3-tools/actions/workflows/test.yml)
 ![Documentation Status](https://readthedocs.org/projects/aws-s3-tools/badge/?version=latest)
 ![Package Version](https://img.shields.io/pypi/v/aws-s3-tools)
 ![Python Version](https://img.shields.io/pypi/pyversions/aws-s3-tools)
