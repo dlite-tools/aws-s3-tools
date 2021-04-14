@@ -8,7 +8,7 @@ Please note we have a code of conduct, please follow it in all your interactions
 ## Contributing to the Codebase
 
 The code is hosted on [GitHub](https://github.com/FerrariDG/aws-s3-tools),
-so you will need to use [Git](http://git-scm.com/) to clone the project and make
+so you will need to use [Git](http://git-scm.com/) to fork and clone the project, and make
 changes to the codebase. Once you have obtained a copy of the code, you should
 create a development environment that is separate from your existing Python
 environment so that you can make and test changes without compromising your
