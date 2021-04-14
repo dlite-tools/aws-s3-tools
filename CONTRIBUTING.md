@@ -33,6 +33,7 @@ do not break any tests by running:
 ```
 make all
 ```
+Do not forget to create new tests to cover the code alterations.
 
 ### Pull Request Process
 
