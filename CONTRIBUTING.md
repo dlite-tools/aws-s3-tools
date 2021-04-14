@@ -21,7 +21,7 @@ To create an isolated development environment:
 
 * Install [Poetry](https://python-poetry.org/)
 * Make sure that you have cloned the repository
-* `cd` to the `aws-s3-tools` source directory
+* Go to the project source directory
 * Build environment. Run `poetry install`
 
 
