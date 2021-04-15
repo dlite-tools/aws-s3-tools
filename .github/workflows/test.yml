@@ -38,6 +38,7 @@ jobs:
       run: make coverage
     - name: Upload Coverage
       uses: codecov/codecov-action@v1
+      if: ${{ matrix.python-version == '3.7' }}
       with:
         files: ./coverage.xml
         fail_ci_if_error: true
