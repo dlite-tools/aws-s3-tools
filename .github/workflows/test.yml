@@ -34,6 +34,8 @@ jobs:
       run: make static-tests
     - name: Unit tests
       run: make unit-tests
+    - name: Run Coverage
+      run: make coverage
     - name: Upload Coverage
       uses: codecov/codecov-action@v1
       with:
