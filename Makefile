@@ -25,9 +25,9 @@ unit-tests:
 
 coverage:
 		###### Running coverage analysis ######
-		poetry run pytest -v --cov-report term-missing --cov-report xml --cov $(PACKAGE)
+		poetry run pytest --cov-report term-missing --cov-report xml --cov $(PACKAGE)
 
 coverage-html:
 		###### Running coverage analysis with html export ######
-		poetry run pytest -v --cov-report html --cov $(PACKAGE)
+		poetry run pytest --cov-report html --cov $(PACKAGE)
 		open htmlcov/index.html
