@@ -24,7 +24,7 @@ unit-tests:
 		poetry run pytest -v $(UNIT_TESTS)
 
 coverage:
-		###### Running coverage analysis with JUnit xml export ######
+		###### Running coverage analysis ######
 		poetry run pytest -v --cov-report term-missing --cov $(PACKAGE)
 
 coverage-html:

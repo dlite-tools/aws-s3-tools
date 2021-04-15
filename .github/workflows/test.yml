@@ -34,3 +34,7 @@ jobs:
       run: make static-tests
     - name: Unit tests
       run: make unit-tests
+    - name: Upload Coverage
+      uses: codecov/codecov-action@v1
+      with:
+        fail_ci_if_error: true
