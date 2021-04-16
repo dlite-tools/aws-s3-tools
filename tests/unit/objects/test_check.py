@@ -1,4 +1,4 @@
-"""Unit tests for utils.py"""
+"""Unit tests for check.py"""
 from s3_tools import object_exists
 
 from tests.unit.conftest import (
