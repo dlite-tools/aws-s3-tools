@@ -10,23 +10,21 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
+import pkg_resources
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('../..'))
 
 
 # -- Project information -----------------------------------------------------
-
 
 project = 'aws-s3-tools'
 copyright = '2021, Daniel Ferrari'
 author = 'Daniel Ferrari'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
-
-# import pkg_resources
-# release = pkg_resources.get_distribution("<package>").version
+release = pkg_resources.get_distribution("aws-s3-tools").version
 
 
 # -- General configuration ---------------------------------------------------
