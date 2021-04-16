@@ -6,7 +6,7 @@ from typing import (
 
 import boto3
 
-from .list import list_objects
+from s3_tools.objects.list import list_objects
 
 
 def delete_object(bucket: str, key: str) -> None:

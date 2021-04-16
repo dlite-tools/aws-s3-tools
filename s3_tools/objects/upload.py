@@ -9,7 +9,7 @@ from typing import (
 
 import boto3
 
-from .utils import _get_future_output
+from s3_tools.utils import _get_future_output
 
 
 def upload_file_to_key(bucket: str, key: str, local_filename: str) -> str:

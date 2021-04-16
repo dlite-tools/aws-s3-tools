@@ -10,8 +10,8 @@ from typing import (
 
 import boto3
 
-from .list import list_objects
-from .utils import _get_future_output
+from s3_tools.objects.list import list_objects
+from s3_tools.utils import _get_future_output
 
 
 def download_key_to_file(bucket: str, key: str, local_filename: str) -> bool:
