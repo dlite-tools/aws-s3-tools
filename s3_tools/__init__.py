@@ -1,4 +1,8 @@
 """AWS S3 Tools."""
+from s3_tools.objects.check import (
+    object_exists
+)
+
 from s3_tools.objects.delete import (
     delete_keys,
     delete_object,
@@ -30,10 +34,6 @@ from s3_tools.objects.upload import (
     upload_file_to_key,
     upload_files_to_keys,
     upload_folder_to_prefix
-)
-
-from s3_tools.utils import (
-    object_exists
 )
 
 from s3_tools.objects.write import (
