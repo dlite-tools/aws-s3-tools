@@ -15,7 +15,7 @@ import sys
 
 import toml
 
-
+print(os.getcwd())
 sys.path.insert(0, os.path.abspath('../..'))
 
 with open('pyproject.toml') as f:
