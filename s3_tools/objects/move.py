@@ -4,7 +4,7 @@ from typing import List
 
 import boto3
 
-from .delete import delete_object
+from s3_tools.objects.delete import delete_object
 
 
 def move_object(source_bucket: str, source_key: str, destination_bucket: str, destination_key: str) -> None:

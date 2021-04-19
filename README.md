@@ -77,6 +77,7 @@ requests or bugfixes.
 maintained by Daniel Ferrari ([@FerrariDG](https://github.com/FerrariDG)) and Carlos Alves ([@cmalves](https://github.com/cmalves))
 
 ---
+
 ## Acknowledgement
 
 The idea from these functions come from an amazing team that I worked with. This repo is a refactor and documentation to make this public to everyone.

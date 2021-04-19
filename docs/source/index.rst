@@ -3,16 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to AWS S3 Tools documentation!
-========================================
+Welcome to AWS S3 Tools Documentation
+=====================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   :caption: Contents
 
    introduction.rst
-   modules.rst
-
+   objects.rst
 
 
 Indices and tables
