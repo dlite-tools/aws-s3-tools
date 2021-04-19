@@ -10,12 +10,17 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
+import os
+import sys
+
 import toml
+
+sys.path.insert(0, os.path.abspath('../..'))
+
+# -- Project information -----------------------------------------------------
 
 with open('../../pyproject.toml') as f:
     parsed = toml.load(f)
-
-# -- Project information -----------------------------------------------------
 
 project = parsed['tool']['poetry']['name']
 copyright = parsed['tool']['aws-s3-tools']['copyright']
