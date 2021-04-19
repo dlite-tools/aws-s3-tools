@@ -10,21 +10,24 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-import pkg_resources
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../..'))
+import toml
 
+sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'aws-s3-tools'
-copyright = '2021, Daniel Ferrari'
-author = 'Daniel Ferrari'
+with open('../../pyproject.toml') as f:
+    parsed = toml.load(f)
+
+project = parsed['tool']['poetry']['name']
+copyright = parsed['tool']['aws-s3-tools']['copyright']
+author = parsed['tool']['poetry']['authors'][0]
 
 # The full version, including alpha/beta/rc tags
-release = pkg_resources.get_distribution("aws-s3-tools").version
+release = parsed['tool']['poetry']['version']
 
 
 # -- General configuration ---------------------------------------------------
@@ -59,3 +62,8 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# doc types to build
+sphinx_enable_epub_build = False
+sphinx_enable_pdf_build = False
+exclude_patterns = ["_build", "Thumbs.db", ".*", "~*", "*~", "*#"]
