@@ -3,6 +3,7 @@ import shutil
 from filecmp import dircmp
 from pathlib import Path
 
+import pytest
 from botocore.exceptions import ClientError
 
 from s3_tools import (
@@ -64,13 +65,14 @@ class TestDownload:
         assert after is True
         assert response is True
 
-    def test_download_keys_to_files(self, s3_client):
+    @pytest.mark.parametrize('show', [False, True])
+    def test_download_keys_to_files(self, s3_client, show):
         create = [(f"prefix/mock_{i}.csv", FILENAME) for i in range(4)]
         download = [(f"prefix/mock_{i}.csv", f"{FILENAME}.{i}") for i in range(4)]
 
         with create_bucket(s3_client, BUCKET_NAME, keys_paths=create):
             before = [Path(fn).exists() for key, fn in download]
-            response = download_keys_to_files(BUCKET_NAME, keys_paths=download)
+            response = download_keys_to_files(BUCKET_NAME, keys_paths=download, show_progress=show)
             after = [Path(fn).exists() for key, fn in download]
 
         for key, fn in download:

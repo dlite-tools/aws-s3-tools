@@ -50,11 +50,12 @@ class TestUpload:
         assert before is False
         assert after is True
 
-    def test_upload_files_to_keys(self, s3_client):
+    @pytest.mark.parametrize('show', [False, True])
+    def test_upload_files_to_keys(self, s3_client, show):
         lst = [(FILENAME, f"prefix/mock_{i}.csv") for i in range(4)]
         with create_bucket(s3_client, BUCKET_NAME):
             before = [object_exists(BUCKET_NAME, key) for fn, key in lst]
-            upload_files_to_keys(BUCKET_NAME, lst)
+            upload_files_to_keys(BUCKET_NAME, lst, show_progress=show)
             after = [object_exists(BUCKET_NAME, key) for fn, key in lst]
 
         assert all(before) is False
