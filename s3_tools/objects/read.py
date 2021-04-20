@@ -39,9 +39,6 @@ def read_object_to_bytes(bucket: str, key: str) -> bytes:
     s3 = session.client("s3")
     obj = s3.get_object(Bucket=bucket, Key=key)
 
-    if "Body" not in obj:
-        raise KeyError("Missing key 'Body' on response")
-
     return obj["Body"].read()
 
 
