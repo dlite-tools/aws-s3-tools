@@ -11,10 +11,19 @@ from typing import (
 import boto3
 
 from s3_tools.objects.list import list_objects
-from s3_tools.utils import _get_future_output
+from s3_tools.utils import (
+    _create_progress_bar,
+    _get_future_output
+)
 
 
-def download_key_to_file(bucket: str, key: str, local_filename: str) -> bool:
+def download_key_to_file(
+    bucket: str,
+    key: str,
+    local_filename: str,
+    progress=None,  # type: ignore # No import if extra not installed
+    task_id: int = -1
+) -> bool:
     """Retrieve one object from AWS S3 bucket and store into local disk.
 
     Parameters
@@ -27,6 +36,12 @@ def download_key_to_file(bucket: str, key: str, local_filename: str) -> bool:
 
     local_filename: str
         Local file where the data will be downloaded to.
+
+    progress: rich.Progress
+        Instance of a rich Progress bar, by default None.
+
+    task_id: int
+        Task ID on the progress bar to be updated, by default -1.
 
     Returns
     -------
@@ -47,13 +62,16 @@ def download_key_to_file(bucket: str, key: str, local_filename: str) -> bool:
     s3 = session.client("s3")
     Path(local_filename).parent.mkdir(parents=True, exist_ok=True)
     s3.download_file(Bucket=bucket, Key=key, Filename=local_filename)
+    if progress:
+        progress.update(task_id, advance=1)
     return Path(local_filename).exists()
 
 
 def download_keys_to_files(
     bucket: str,
     keys_paths: List[Tuple[str, str]],
-    threads: int = 5
+    threads: int = 5,
+    show_progress: bool = False
 ) -> List[Tuple[str, str, Any]]:
     """Download list of objects to specific paths.
 
@@ -68,6 +86,10 @@ def download_keys_to_files(
 
     threads: int
         Number of parallel downloads, by default 5.
+
+    show_progress: bool
+        Show progress bar on console, by default False.
+        (Need to install extra [progress] to be used)
 
     Returns
     -------
@@ -93,18 +115,37 @@ def download_keys_to_files(
     ]
 
     """
+    if show_progress:
+        progress, task_id = _create_progress_bar("Downloading", len(keys_paths))
+        progress.start()
+        progress.start_task(task_id)
+    else:
+        progress, task_id = None, -1
+
     with futures.ThreadPoolExecutor(max_workers=threads) as executor:
         # Create a dictionary to map the future execution with the (S3 key, Local filename)
         # dict = {future: values}
         executions = {
-            executor.submit(download_key_to_file, bucket, s3_key, filename): {"s3": s3_key, "fn": filename}
+            executor.submit(
+                download_key_to_file,
+                bucket,
+                s3_key,
+                filename,
+                progress,
+                task_id
+            ): {"s3": s3_key, "fn": filename}
             for s3_key, filename in keys_paths
         }
 
-        return [
+        output = [
             (executions[future]["s3"], executions[future]["fn"], _get_future_output(future))
             for future in futures.as_completed(executions)
         ]
+
+    if show_progress:
+        progress.stop()
+
+    return output
 
 
 def download_prefix_to_folder(
@@ -113,7 +154,8 @@ def download_prefix_to_folder(
     folder: str,
     search_str: Optional[str] = None,
     remove_prefix: bool = True,
-    threads: int = 5
+    threads: int = 5,
+    show_progress: bool = False
 ) -> List[Tuple[str, str, Any]]:
     """Download objects to local folder.
 
@@ -140,6 +182,10 @@ def download_prefix_to_folder(
 
     threads: int
         Number of parallel downloads, by default 5.
+
+    show_progress: bool
+        Show progress bar on console, by default False.
+        (Need to install extra [progress] to be used)
 
     Returns
     -------
@@ -168,4 +214,4 @@ def download_prefix_to_folder(
         "{}/{}".format(folder, key.replace(prefix, "")[1:] if remove_prefix else key)
     ) for key in s3_keys]
 
-    return download_keys_to_files(bucket, keys_paths, threads)
+    return download_keys_to_files(bucket, keys_paths, threads, show_progress)
