@@ -52,6 +52,9 @@ class TestUpload:
 
     @pytest.mark.parametrize('show', [False, True])
     def test_upload_files_to_keys(self, s3_client, show):
+        if show:
+            pytest.importorskip("rich")
+
         lst = [(FILENAME, f"prefix/mock_{i}.csv") for i in range(4)]
         with create_bucket(s3_client, BUCKET_NAME):
             before = [object_exists(BUCKET_NAME, key) for fn, key in lst]

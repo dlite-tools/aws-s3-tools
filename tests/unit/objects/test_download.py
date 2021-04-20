@@ -67,6 +67,9 @@ class TestDownload:
 
     @pytest.mark.parametrize('show', [False, True])
     def test_download_keys_to_files(self, s3_client, show):
+        if show:
+            pytest.importorskip("rich")
+
         create = [(f"prefix/mock_{i}.csv", FILENAME) for i in range(4)]
         download = [(f"prefix/mock_{i}.csv", f"{FILENAME}.{i}") for i in range(4)]
 
