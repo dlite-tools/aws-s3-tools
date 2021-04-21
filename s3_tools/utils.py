@@ -59,8 +59,8 @@ def _create_progress_bar(description: str, length: int):
         )
 
     except ImportError:
-        print("Please install rich package. "
-              "See the docs at https://rich.readthedocs.io/en/stable/introduction.html for more information.")
+        print("Missing extra dependency to use progress bar."
+              " Please run 'pip install aws-s3-tools[progress]'.")
         raise
 
     return progress, task_id
