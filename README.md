@@ -9,8 +9,8 @@
 
 AWS S3 Tools is a Python package to make it easier to deal with S3 objects, where you can:
 
-- List S3 buckets' content
 - Check if S3 objects exist
+- List S3 bucket content
 - Read from S3 objects to Python variables
 - Write from Python variables to S3 objects
 - Upload from local files to S3
@@ -18,7 +18,8 @@ AWS S3 Tools is a Python package to make it easier to deal with S3 objects, wher
 - Delete S3 objects
 - Move S3 objects
 
-The AWS authentication is done via boto3 package, [click here to know more about it](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html).
+The AWS authentication is done via boto3 package,
+[click here to know more about it](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html).
 
 ---
 
@@ -30,26 +31,44 @@ You can install AWS S3 Tools from PyPi with `pip` or your favorite package manag
 
 Add the ``-U`` switch to update to the current version, if AWS S3 Tools is already installed.
 
+If you want to use the **progress bar** feature when downloading or uploading,
+you need to install an extra dependency.
+
+    pip install aws-s3-tools[progress]
+
 ---
 
 ## Usage
 
 [The full documentation can be found here](https://aws-s3-tools.readthedocs.io/en/latest/index.html).
 
-    ```python
-    from s3_tools import object_exists
+```python
+from s3_tools import object_exists
 
-    if object_exists("my-bucket", "s3-prefix/object.data"):
-        # Do magic
-    else:
-        print("Object not found")
-    ```
+if object_exists("my-bucket", "s3-prefix/object.data"):
+    # Do magic
+else:
+    print("Object not found")
+```
 
----
+Example to use the progress bar:
 
-## Next Steps
+```python
+from s3_tools import upload_folder_to_prefix
 
-- Improve error handling by creating Exceptions
+result = upload_folder_to_prefix(
+    bucket='daniel-ferrari',
+    prefix='aws-s3-tools',
+    search_str='*.py',
+    threads=2,
+    folder='s3_tools',
+    show_progress=True
+)
+```
+
+Progress bar when running the code above:
+
+![Progress bar gif](docs/source/demo.gif)
 
 ---
 

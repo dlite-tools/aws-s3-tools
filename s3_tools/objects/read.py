@@ -21,11 +21,6 @@ def read_object_to_bytes(bucket: str, key: str) -> bytes:
     bytes
         Object content as bytes.
 
-    Raises
-    ------
-    KeyError
-        When the key 'Body' is missing on the response.
-
     Examples
     --------
     >>> read_object_to_bytes(
@@ -38,9 +33,6 @@ def read_object_to_bytes(bucket: str, key: str) -> bytes:
     session = boto3.session.Session()
     s3 = session.client("s3")
     obj = s3.get_object(Bucket=bucket, Key=key)
-
-    if "Body" not in obj:
-        raise KeyError("Missing key 'Body' on response")
 
     return obj["Body"].read()
 

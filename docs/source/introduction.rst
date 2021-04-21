@@ -23,8 +23,15 @@ You can install AWS S3 Tools from PyPi with `pip` or your favorite package manag
 
 Add the ``-U`` switch to update to the current version, if AWS S3 Tools is already installed.
 
+If you want to use the **progress bar** feature when downloading or uploading, you need to install an extra dependency::
+
+    pip install aws-s3-tools[progress]
+
+
 Usage
 -----
+
+Simple example:
 
 .. code-block:: python
 
@@ -35,3 +42,21 @@ Usage
         pass
     else:
         print("Object not found")
+
+Using the progress bar:
+
+.. code-block:: python
+
+    from s3_tools import upload_folder_to_prefix
+
+    result = upload_folder_to_prefix(
+        bucket='daniel-ferrari',
+        prefix='aws-s3-tools',
+        search_str='*.py',
+        threads=2,
+        folder='s3_tools',
+        show_progress=True
+    )
+
+.. image:: ./demo.gif
+    :alt: Animated GIF with progress bar

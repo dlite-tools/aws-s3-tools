@@ -9,10 +9,19 @@ from typing import (
 
 import boto3
 
-from s3_tools.utils import _get_future_output
+from s3_tools.utils import (
+    _create_progress_bar,
+    _get_future_output
+)
 
 
-def upload_file_to_key(bucket: str, key: str, local_filename: str) -> str:
+def upload_file_to_key(
+    bucket: str,
+    key: str,
+    local_filename: str,
+    progress=None,  # type: ignore # No import if extra not installed
+    task_id: int = -1
+) -> str:
     """Upload one file from local disk and store into AWS S3 bucket.
 
     Parameters
@@ -25,6 +34,12 @@ def upload_file_to_key(bucket: str, key: str, local_filename: str) -> str:
 
     local_filename: str
         Local file from where the data will be uploaded.
+
+    progress: rich.Progress
+        Instance of a rich Progress bar, by default None.
+
+    task_id: int
+        Task ID on the progress bar to be updated, by default -1.
 
     Returns
     -------
@@ -44,13 +59,16 @@ def upload_file_to_key(bucket: str, key: str, local_filename: str) -> str:
     session = boto3.session.Session()
     s3 = session.client("s3")
     s3.upload_file(Bucket=bucket, Key=key, Filename=local_filename)
+    if progress:
+        progress.update(task_id, advance=1)
     return "{}/{}/{}".format(s3.meta.endpoint_url, bucket, key)
 
 
 def upload_files_to_keys(
     bucket: str,
     paths_keys: List[Tuple[str, str]],
-    threads: int = 5
+    threads: int = 5,
+    show_progress: bool = False
 ) -> List[Tuple[str, str, Any]]:
     """Upload list of files to specific objects.
 
@@ -65,6 +83,10 @@ def upload_files_to_keys(
 
     threads : int, optional
         Number of parallel uploads, by default 5.
+
+    show_progress: bool
+        Show progress bar on console, by default False.
+        (Need to install extra [progress] to be used)
 
     Returns
     -------
@@ -90,18 +112,37 @@ def upload_files_to_keys(
     ]
 
     """
+    if show_progress:
+        progress, task_id = _create_progress_bar("Uploading", len(paths_keys))
+        progress.start()
+        progress.start_task(task_id)
+    else:
+        progress, task_id = None, -1
+
     with futures.ThreadPoolExecutor(max_workers=threads) as executor:
         # Create a dictionary to map the future execution with the (S3 key, Local filename)
         # dict = {future: values}
         executions = {
-            executor.submit(upload_file_to_key, bucket, s3_key, filename): {"s3": s3_key, "fn": filename}
+            executor.submit(
+                upload_file_to_key,
+                bucket,
+                s3_key,
+                filename,
+                progress,
+                task_id
+            ): {"s3": s3_key, "fn": filename}
             for filename, s3_key in paths_keys
         }
 
-        return [
+        output = [
             (executions[future]["fn"], executions[future]["s3"], _get_future_output(future))
             for future in futures.as_completed(executions)
         ]
+
+    if show_progress:
+        progress.stop()
+
+    return output
 
 
 def upload_folder_to_prefix(
@@ -109,7 +150,8 @@ def upload_folder_to_prefix(
     prefix: str,
     folder: str,
     search_str: str = "*",
-    threads: int = 5
+    threads: int = 5,
+    show_progress: bool = False
 ) -> List[Tuple[str, str, Any]]:
     """Upload local folder to a S3 prefix.
 
@@ -135,6 +177,10 @@ def upload_folder_to_prefix(
 
     threads : int, optional
         Number of parallel uploads, by default 5
+
+    show_progress: bool
+        Show progress bar on console, by default False.
+        (Need to install extra [progress] to be used)
 
     Returns
     -------
@@ -166,4 +212,4 @@ def upload_folder_to_prefix(
         for p in paths
     ]
 
-    return upload_files_to_keys(bucket, paths_keys, threads)
+    return upload_files_to_keys(bucket, paths_keys, threads, show_progress)
