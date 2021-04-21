@@ -42,14 +42,33 @@ you need to install an extra dependency.
 
 [The full documentation can be found here](https://aws-s3-tools.readthedocs.io/en/latest/index.html).
 
-    ```python
-    from s3_tools import object_exists
+```python
+from s3_tools import object_exists
 
-    if object_exists("my-bucket", "s3-prefix/object.data"):
-        # Do magic
-    else:
-        print("Object not found")
-    ```
+if object_exists("my-bucket", "s3-prefix/object.data"):
+    # Do magic
+else:
+    print("Object not found")
+```
+
+Example to use the progress bar:
+
+```python
+from s3_tools import upload_folder_to_prefix
+
+result = upload_folder_to_prefix(
+    bucket='daniel-ferrari',
+    prefix='aws-s3-tools',
+    search_str='*.py',
+    threads=2,
+    folder='s3_tools',
+    show_progress=True
+)
+```
+
+Progress bar when running the code above:
+
+![Progress bar gif](docs/source/demo.gif)
 
 ---
 
