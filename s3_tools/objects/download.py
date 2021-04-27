@@ -3,6 +3,7 @@ from concurrent import futures
 from pathlib import Path
 from typing import (
     Any,
+    Dict,
     List,
     Optional,
     Tuple
@@ -22,7 +23,8 @@ def download_key_to_file(
     key: str,
     local_filename: str,
     progress=None,  # type: ignore # No import if extra not installed
-    task_id: int = -1
+    task_id: int = -1,
+    aws_auth: Dict[str, str] = {}
 ) -> bool:
     """Retrieve one object from AWS S3 bucket and store into local disk.
 
@@ -43,6 +45,9 @@ def download_key_to_file(
     task_id: int
         Task ID on the progress bar to be updated, by default -1.
 
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
+
     Returns
     -------
     bool
@@ -58,7 +63,7 @@ def download_key_to_file(
     True
 
     """
-    session = boto3.session.Session()
+    session = boto3.session.Session(**aws_auth)
     s3 = session.client("s3")
     Path(local_filename).parent.mkdir(parents=True, exist_ok=True)
     s3.download_file(Bucket=bucket, Key=key, Filename=local_filename)
@@ -71,7 +76,8 @@ def download_keys_to_files(
     bucket: str,
     keys_paths: List[Tuple[str, str]],
     threads: int = 5,
-    show_progress: bool = False
+    show_progress: bool = False,
+    aws_auth: Dict[str, str] = {}
 ) -> List[Tuple[str, str, Any]]:
     """Download list of objects to specific paths.
 
@@ -90,6 +96,9 @@ def download_keys_to_files(
     show_progress: bool
         Show progress bar on console, by default False.
         (Need to install extra [progress] to be used)
+
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
 
     Returns
     -------
@@ -132,7 +141,8 @@ def download_keys_to_files(
                 s3_key,
                 filename,
                 progress,
-                task_id
+                task_id,
+                aws_auth
             ): {"s3": s3_key, "fn": filename}
             for s3_key, filename in keys_paths
         }
@@ -155,7 +165,8 @@ def download_prefix_to_folder(
     search_str: Optional[str] = None,
     remove_prefix: bool = True,
     threads: int = 5,
-    show_progress: bool = False
+    show_progress: bool = False,
+    aws_auth: Dict[str, str] = {}
 ) -> List[Tuple[str, str, Any]]:
     """Download objects to local folder.
 
@@ -187,9 +198,12 @@ def download_prefix_to_folder(
         Show progress bar on console, by default False.
         (Need to install extra [progress] to be used)
 
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
+
     Returns
     -------
-    list of tuples
+    List[Tuples]
         A list with tuples formed by the "S3_Key", "Local_Path", and the result of the download.
         If successful will have True, if not will contain the error message.
 
@@ -207,11 +221,11 @@ def download_prefix_to_folder(
     ]
 
     """
-    s3_keys = list_objects(bucket=bucket, prefix=prefix, search_str=search_str)
+    s3_keys = list_objects(bucket=bucket, prefix=prefix, search_str=search_str, aws_auth=aws_auth)
 
     keys_paths = [(
         key,
         "{}/{}".format(folder, key.replace(prefix, "")[1:] if remove_prefix else key)
     ) for key in s3_keys]
 
-    return download_keys_to_files(bucket, keys_paths, threads, show_progress)
+    return download_keys_to_files(bucket, keys_paths, threads, show_progress, aws_auth)

@@ -1,9 +1,11 @@
 """Check objects on S3 bucket."""
+from typing import Dict
+
 import boto3
 from botocore.exceptions import ClientError
 
 
-def object_exists(bucket: str, key: str) -> bool:
+def object_exists(bucket: str, key: str, aws_auth: Dict[str, str] = {}) -> bool:
     """Check if an object exists for a given bucket and key.
 
     Parameters
@@ -13,6 +15,9 @@ def object_exists(bucket: str, key: str) -> bool:
 
     key : str
         Full key for the object.
+
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
 
     Returns
     -------
@@ -29,7 +34,7 @@ def object_exists(bucket: str, key: str) -> bool:
     >>> object_exists("myBucket", "myFiles/music.mp3")
     True
     """
-    session = boto3.session.Session()
+    session = boto3.session.Session(**aws_auth)
     s3 = session.client("s3")
 
     try:

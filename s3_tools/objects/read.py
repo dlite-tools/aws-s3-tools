@@ -1,11 +1,14 @@
 """Read S3 objects into variables."""
-from typing import Dict
+from typing import (
+    Any,
+    Dict
+)
 
 import boto3
 import ujson
 
 
-def read_object_to_bytes(bucket: str, key: str) -> bytes:
+def read_object_to_bytes(bucket: str, key: str, aws_auth: Dict[str, str] = {}) -> bytes:
     """Retrieve one object from AWS S3 bucket as a byte array.
 
     Parameters
@@ -15,6 +18,9 @@ def read_object_to_bytes(bucket: str, key: str) -> bytes:
 
     key: str
         Key where the object is stored.
+
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
 
     Returns
     -------
@@ -30,14 +36,14 @@ def read_object_to_bytes(bucket: str, key: str) -> bytes:
     b"The file content"
 
     """
-    session = boto3.session.Session()
+    session = boto3.session.Session(**aws_auth)
     s3 = session.client("s3")
     obj = s3.get_object(Bucket=bucket, Key=key)
 
     return obj["Body"].read()
 
 
-def read_object_to_text(bucket: str, key: str) -> str:
+def read_object_to_text(bucket: str, key: str, aws_auth: Dict[str, str] = {}) -> str:
     """Retrieve one object from AWS S3 bucket as a string.
 
     Parameters
@@ -47,6 +53,9 @@ def read_object_to_text(bucket: str, key: str) -> str:
 
     key: str
         Key where the object is stored.
+
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
 
     Returns
     -------
@@ -62,11 +71,11 @@ def read_object_to_text(bucket: str, key: str) -> str:
     "The file content"
 
     """
-    data = read_object_to_bytes(bucket, key)
+    data = read_object_to_bytes(bucket, key, aws_auth)
     return data.decode("utf-8")
 
 
-def read_object_to_dict(bucket: str, key: str) -> Dict:
+def read_object_to_dict(bucket: str, key: str, aws_auth: Dict[str, str] = {}) -> Dict[Any, Any]:
     """Retrieve one object from AWS S3 bucket as a dictionary.
 
     Parameters
@@ -77,9 +86,12 @@ def read_object_to_dict(bucket: str, key: str) -> Dict:
     key: str
         Key where the object is stored.
 
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
+
     Returns
     -------
-    dict
+    Dict[Any, Any]
         Object content as dictionary.
 
     Examples
@@ -91,5 +103,5 @@ def read_object_to_dict(bucket: str, key: str) -> Dict:
     {"key": "value", "1": "text"}
 
     """
-    data = read_object_to_bytes(bucket, key)
+    data = read_object_to_bytes(bucket, key, aws_auth)
     return ujson.loads(data.decode("utf-8"))

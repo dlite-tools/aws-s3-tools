@@ -3,6 +3,7 @@ from concurrent import futures
 from pathlib import Path
 from typing import (
     Any,
+    Dict,
     List,
     Tuple
 )
@@ -20,7 +21,8 @@ def upload_file_to_key(
     key: str,
     local_filename: str,
     progress=None,  # type: ignore # No import if extra not installed
-    task_id: int = -1
+    task_id: int = -1,
+    aws_auth: Dict[str, str] = {}
 ) -> str:
     """Upload one file from local disk and store into AWS S3 bucket.
 
@@ -41,6 +43,9 @@ def upload_file_to_key(
     task_id: int
         Task ID on the progress bar to be updated, by default -1.
 
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
+
     Returns
     -------
     str
@@ -56,7 +61,7 @@ def upload_file_to_key(
     http://s3.amazonaws.com/myBucket/myFiles/music.mp3
 
     """
-    session = boto3.session.Session()
+    session = boto3.session.Session(**aws_auth)
     s3 = session.client("s3")
     s3.upload_file(Bucket=bucket, Key=key, Filename=local_filename)
     if progress:
@@ -68,7 +73,8 @@ def upload_files_to_keys(
     bucket: str,
     paths_keys: List[Tuple[str, str]],
     threads: int = 5,
-    show_progress: bool = False
+    show_progress: bool = False,
+    aws_auth: Dict[str, str] = {}
 ) -> List[Tuple[str, str, Any]]:
     """Upload list of files to specific objects.
 
@@ -87,6 +93,9 @@ def upload_files_to_keys(
     show_progress: bool
         Show progress bar on console, by default False.
         (Need to install extra [progress] to be used)
+
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
 
     Returns
     -------
@@ -129,7 +138,8 @@ def upload_files_to_keys(
                 s3_key,
                 filename,
                 progress,
-                task_id
+                task_id,
+                aws_auth
             ): {"s3": s3_key, "fn": filename}
             for filename, s3_key in paths_keys
         }
@@ -151,7 +161,8 @@ def upload_folder_to_prefix(
     folder: str,
     search_str: str = "*",
     threads: int = 5,
-    show_progress: bool = False
+    show_progress: bool = False,
+    aws_auth: Dict[str, str] = {}
 ) -> List[Tuple[str, str, Any]]:
     """Upload local folder to a S3 prefix.
 
@@ -181,6 +192,9 @@ def upload_folder_to_prefix(
     show_progress: bool
         Show progress bar on console, by default False.
         (Need to install extra [progress] to be used)
+
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
 
     Returns
     -------
@@ -212,4 +226,4 @@ def upload_folder_to_prefix(
         for p in paths
     ]
 
-    return upload_files_to_keys(bucket, paths_keys, threads, show_progress)
+    return upload_files_to_keys(bucket, paths_keys, threads, show_progress, aws_auth)
