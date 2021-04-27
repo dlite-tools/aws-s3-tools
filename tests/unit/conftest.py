@@ -17,6 +17,7 @@ EMPTY_FILE = "tests/resources/empty.data"
 
 @pytest.fixture(scope="module")
 def aws_credentials():
+    os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
     os.environ["AWS_ACCESS_KEY_ID"] = "test"
     os.environ["AWS_SECRET_ACCESS_KEY"] = "test"
     os.environ["AWS_SECURITY_TOKEN"] = "test"
@@ -27,7 +28,7 @@ def aws_credentials():
 def s3_client(aws_credentials):
     with mock_s3():
         session = boto3.session.Session()
-        s3 = session.client("s3", region_name="us-east-1")
+        s3 = session.client("s3")
         yield s3
 
 
