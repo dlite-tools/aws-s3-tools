@@ -1,4 +1,7 @@
 """Unit tests for check.py"""
+import pytest
+from botocore.exceptions import ClientError
+
 from s3_tools import object_exists
 
 from tests.unit.conftest import (
@@ -8,10 +11,11 @@ from tests.unit.conftest import (
 )
 
 
-class TestUtils:
+class TestCheck:
 
     def test_check_nonexisting_bucket(self, s3_client):
-        assert object_exists(BUCKET_NAME, "prefix/key.csv") is False
+        with pytest.raises(ClientError):
+            object_exists(BUCKET_NAME, "prefix/key.csv")
 
     def test_check_nonexisting_object(self, s3_client):
         with create_bucket(s3_client, BUCKET_NAME):
