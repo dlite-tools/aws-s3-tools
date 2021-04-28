@@ -5,7 +5,7 @@ from typing import Dict
 import boto3
 
 
-def write_object_from_bytes(bucket: str, key: str, data: bytes) -> str:
+def write_object_from_bytes(bucket: str, key: str, data: bytes, aws_auth: Dict[str, str] = {}) -> str:
     """Upload a bytes object to an object into AWS S3 bucket.
 
     Parameters
@@ -18,6 +18,9 @@ def write_object_from_bytes(bucket: str, key: str, data: bytes) -> str:
 
     data: bytes
         The object data to be uploaded to AWS S3.
+
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
 
     Returns
     -------
@@ -43,13 +46,13 @@ def write_object_from_bytes(bucket: str, key: str, data: bytes) -> str:
     if not isinstance(data, bytes):
         raise TypeError("Object data must be bytes type")
 
-    session = boto3.session.Session()
+    session = boto3.session.Session(**aws_auth)
     s3 = session.client("s3")
     s3.put_object(Bucket=bucket, Key=key, Body=data)
     return "{}/{}/{}".format(s3.meta.endpoint_url, bucket, key)
 
 
-def write_object_from_text(bucket: str, key: str, data: str) -> str:
+def write_object_from_text(bucket: str, key: str, data: str, aws_auth: Dict[str, str] = {}) -> str:
     """Upload a string to an object into AWS S3 bucket.
 
     Parameters
@@ -62,6 +65,9 @@ def write_object_from_text(bucket: str, key: str, data: str) -> str:
 
     data: str
         The object data to be uploaded to AWS S3.
+
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
 
     Returns
     -------
@@ -87,10 +93,10 @@ def write_object_from_text(bucket: str, key: str, data: str) -> str:
     if not isinstance(data, str):
         raise TypeError("Object data must be string type")
 
-    return write_object_from_bytes(bucket, key, data.encode())
+    return write_object_from_bytes(bucket, key, data.encode(), aws_auth)
 
 
-def write_object_from_dict(bucket: str, key: str, data: Dict) -> str:
+def write_object_from_dict(bucket: str, key: str, data: Dict, aws_auth: Dict[str, str] = {}) -> str:
     """Upload a dictionary to an object into AWS S3 bucket.
 
     Parameters
@@ -103,6 +109,9 @@ def write_object_from_dict(bucket: str, key: str, data: Dict) -> str:
 
     data: dict
         The object data to be uploaded to AWS S3.
+
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
 
     Returns
     -------
@@ -128,4 +137,4 @@ def write_object_from_dict(bucket: str, key: str, data: Dict) -> str:
     if not isinstance(data, dict):
         raise TypeError("Object data must be dictionary type")
 
-    return write_object_from_bytes(bucket, key, json.dumps(data).encode())
+    return write_object_from_bytes(bucket, key, json.dumps(data).encode(), aws_auth)

@@ -1,32 +1,45 @@
 """List S3 bucket objects."""
-from typing import Optional
+from typing import (
+    Dict,
+    Optional,
+    List
+)
 
 import fnmatch
 
 import boto3
 
 
-def list_objects(bucket: str, prefix: str = "", search_str: Optional[str] = None, max_keys: int = 1000) -> list:
+def list_objects(
+    bucket: str,
+    prefix: str = "",
+    search_str: Optional[str] = None,
+    max_keys: int = 1000,
+    aws_auth: Dict[str, str] = {}
+) -> List[str]:
     """Retrieve the list of objects from AWS S3 bucket under a given prefix and search string.
 
     Parameters
     ----------
-        bucket: str
-            AWS S3 bucket where the objects are stored.
+    bucket: str
+        AWS S3 bucket where the objects are stored.
 
-        prefix: str
-            Prefix where the objects are under.
+    prefix: str
+        Prefix where the objects are under.
 
-        search_str: str
-            Basic search string to filter out keys on result (uses Unix shell-style wildcards), by default is None.
-            For more about the search check "fnmatch" package.
+    search_str: str
+        Basic search string to filter out keys on result (uses Unix shell-style wildcards), by default is None.
+        For more about the search check "fnmatch" package.
 
-        max_keys: int
-            Max number of keys to have pagination.
+    max_keys: int
+        Max number of keys to have pagination.
+
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
 
     Returns
     -------
-    list
+    List[str]
         List of keys inside the bucket, under the path, and filtered.
 
     Examples
@@ -45,9 +58,9 @@ def list_objects(bucket: str, prefix: str = "", search_str: Optional[str] = None
 
     """
     continuation_token: Optional[str] = None
-    keys: list = []
+    keys: List[str] = []
 
-    session = boto3.session.Session()
+    session = boto3.session.Session(**aws_auth)
     s3 = session.client("s3")
 
     while True:

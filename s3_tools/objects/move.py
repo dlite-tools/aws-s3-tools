@@ -1,13 +1,22 @@
 """Move S3 objects."""
 from concurrent import futures
-from typing import List
+from typing import (
+    Dict,
+    List
+)
 
 import boto3
 
 from s3_tools.objects.delete import delete_object
 
 
-def move_object(source_bucket: str, source_key: str, destination_bucket: str, destination_key: str) -> None:
+def move_object(
+    source_bucket: str,
+    source_key: str,
+    destination_bucket: str,
+    destination_key: str,
+    aws_auth: Dict[str, str] = {}
+) -> None:
     """Move S3 object from source bucket and key to destination.
 
     Parameters
@@ -24,6 +33,9 @@ def move_object(source_bucket: str, source_key: str, destination_bucket: str, de
     destination_key : str
         S3 destination key.
 
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
+
     Examples
     --------
     >>> move_object(
@@ -34,7 +46,7 @@ def move_object(source_bucket: str, source_key: str, destination_bucket: str, de
     ... )
 
     """
-    session = boto3.session.Session()
+    session = boto3.session.Session(**aws_auth)
     s3 = session.resource("s3")
 
     s3.meta.client.copy(
@@ -43,7 +55,7 @@ def move_object(source_bucket: str, source_key: str, destination_bucket: str, de
         destination_key
     )
 
-    delete_object(source_bucket, source_key)
+    delete_object(source_bucket, source_key, aws_auth)
 
 
 def move_keys(
@@ -51,7 +63,8 @@ def move_keys(
     source_keys: List[str],
     destination_bucket: str,
     destination_keys: List[str],
-    threads: int = 5
+    threads: int = 5,
+    aws_auth: Dict[str, str] = {}
 ) -> None:
     """Move a list of S3 objects from source bucket to destination.
 
@@ -72,10 +85,14 @@ def move_keys(
     threads : int, optional
         Number of parallel uploads, by default 5.
 
+    aws_auth: Dict[str, str]
+        Contains AWS credentials, by default is empty.
+
     Raises
     ------
     IndexError
         When the source_keys and destination_keys have different length.
+
     ValueError
         When the keys list is empty.
 
@@ -103,7 +120,7 @@ def move_keys(
 
     with futures.ThreadPoolExecutor(max_workers=threads) as executor:
         executors = (
-            executor.submit(move_object, source_bucket, source, destination_bucket, destination)
+            executor.submit(move_object, source_bucket, source, destination_bucket, destination, aws_auth)
             for source, destination in zip(source_keys, destination_keys)
         )
 
