@@ -1,49 +1,75 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 
-name: Test
+name: Tests
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
 
 jobs:
-  test:
+
+  coverage:
 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.7, 3.8, 3.9]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.7
+
     - name: Install Poetry
       run: |
         python -m pip install --upgrade pip
         pip install poetry
+
+    - name: Install all dependencies
+      run: poetry install -E progress
+
+    - name: Run Coverage
+      run: make coverage
+
+    - name: Upload Coverage
+      uses: codecov/codecov-action@v1
+      with:
+        files: ./coverage.xml
+        fail_ci_if_error: true
+
+  python-checks:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Poetry
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry
+
     - name: Install dependencies
       run: poetry install
+
     - name: Static tests
       run: make static-tests
+
     - name: Unit tests with minimal dependencies
       run: make unit-tests
+
     - name: Unit tests with extra dependencies
       run: |
         poetry install -E progress
         make unit-tests
-    - name: Run Coverage
-      run: make coverage
-      if: ${{ matrix.python-version == '3.7' }}
-    - name: Upload Coverage
-      uses: codecov/codecov-action@v1
-      if: ${{ matrix.python-version == '3.7' }}
-      with:
-        files: ./coverage.xml
-        fail_ci_if_error: true
