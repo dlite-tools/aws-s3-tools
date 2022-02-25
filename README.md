@@ -58,7 +58,7 @@ pip install aws-s3-tools[progress]
 from s3_tools import object_exists
 
 if object_exists("my-bucket", "s3-prefix/object.data"):
-    # Do magic
+    # Your code goes here
 else:
     print("Object not found")
 ```
