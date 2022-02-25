@@ -1,7 +1,7 @@
 # AWS S3 Tools
 
 ![MIT License](https://img.shields.io/pypi/l/aws-s3-tools)
-[![Test](https://github.com/FerrariDG/aws-s3-tools/actions/workflows/test.yml/badge.svg)](https://github.com/FerrariDG/aws-s3-tools/actions/workflows/test.yml)
+[![Test](https://github.com/dlite-tools/aws-s3-tools/actions/workflows/test.yml/badge.svg)](https://github.com/dlite-tools/aws-s3-tools/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/FerrariDG/aws-s3-tools/branch/main/graph/badge.svg?token=YRM26tZexs)](https://codecov.io/gh/FerrariDG/aws-s3-tools)
 ![Documentation Status](https://readthedocs.org/projects/aws-s3-tools/badge/?version=latest)
 ![Package Version](https://img.shields.io/pypi/v/aws-s3-tools)
@@ -35,14 +35,18 @@ aws_auth = {
 
 You can install AWS S3 Tools from PyPi with `pip` or your favorite package manager:
 
-    pip install aws-s3-tools
+```shell
+pip install aws-s3-tools
+```
 
 Add the ``-U`` switch to update to the current version, if AWS S3 Tools is already installed.
 
 If you want to use the **progress bar** feature when downloading or uploading,
 you need to install an extra dependency.
 
-    pip install aws-s3-tools[progress]
+```shell
+pip install aws-s3-tools[progress]
+```
 
 ---
 
@@ -65,7 +69,7 @@ Example to use the progress bar:
 from s3_tools import upload_folder_to_prefix
 
 result = upload_folder_to_prefix(
-    bucket='daniel-ferrari',
+    bucket='dlite-tools',
     prefix='aws-s3-tools',
     search_str='*.py',
     threads=2,
@@ -93,7 +97,7 @@ on GitHub.
 
 ## Issues
 
-Go [here](https://github.com/FerrariDG/aws-s3-tools/issues) to submit feature
+Go [here](https://github.com/dlite-tools/aws-s3-tools/issues) to submit feature
 requests or bugfixes.
 
 ---
@@ -101,7 +105,11 @@ requests or bugfixes.
 ## License and Credits
 
 `AWS S3 Tools` is licensed under the [MIT license](LICENSE) and is written and
-maintained by Daniel Ferrari ([@FerrariDG](https://github.com/FerrariDG)) and Carlos Alves ([@cmalves](https://github.com/cmalves))
+maintained by:
+
+- Daniel Ferrari ([@FerrariDG](https://github.com/FerrariDG))
+- Carlos Alves ([@cmalves](https://github.com/cmalves))
+- Tomás Osório ([@tomassosorio](https://github.com/tomassosorio/))
 
 ---
 

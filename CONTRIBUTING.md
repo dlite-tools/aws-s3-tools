@@ -7,13 +7,12 @@ Please note we have a code of conduct, please follow it in all your interactions
 
 ## Contributing to the Codebase
 
-The code is hosted on [GitHub](https://github.com/FerrariDG/aws-s3-tools),
-so you will need to use [Git](http://git-scm.com/) to fork and clone the project, and make
-changes to the codebase. Once you have obtained a copy of the code, you should
-create a development environment that is separate from your existing Python
-environment so that you can make and test changes without compromising your
+The code is hosted on [GitHub](https://github.com/dlite-tools/aws-s3-tools),
+so you will need to use [Git](http://git-scm.com/) to fork and clone the project,
+and make changes to the codebase. Once you have obtained a copy of the code,
+you should create a development environment that is separate from your existing
+Python environment so that you can make and test changes without compromising your
 own work environment.
-
 
 ### Creating a Python environment
 
@@ -24,26 +23,22 @@ To create an isolated development environment:
 * Go to the project source directory
 * Build environment. Run `poetry install`
 
-
 ### Run the test suite locally
 
 Before submitting your changes for review, make sure to check that your changes
 do not break any tests by running:
 
-```
+```shell
 make all
 ```
+
 Do not forget to create new tests to cover the code alterations.
 
 ### Pull Request Process
 
-1. Ensure any install or build dependencies are removed before the end of the layer when doing a
-   build.
-2. Update the [README.md](README) with details of changes to the interface, this includes new environment
-   variables, exposed ports, useful file locations and container parameters.
-3. Increase the version numbers in any examples files and the [README.md](README) to the new version that this
-   Pull Request would represent. The versioning scheme we use is [semantic versioning](http://semver.org/).
-
+1. Ensure any install or build dependencies are removed before the end of the layer when doing a build.
+2. Update the [README.md](README) with details of changes to the interface, this includes new environment variables, exposed ports, useful file locations and container parameters.
+3. Increase the version numbers in any examples files and the [README.md](README) to the new version that this Pull Request would represent. The versioning scheme we use is [semantic versioning](http://semver.org/).
 
 ## Code of Conduct
 
@@ -69,14 +64,11 @@ include:
 
 Examples of unacceptable behavior by participants include:
 
-* The use of sexualized language or imagery and unwelcome sexual attention or
-advances
+* The use of sexualized language or imagery and unwelcome sexual attention or advances
 * Trolling, insulting/derogatory comments, and personal or political attacks
 * Public or private harassment
-* Publishing others' private information, such as a physical or electronic
-  address, without explicit permission
-* Other conduct which could reasonably be considered inappropriate in a
-  professional setting
+* Publishing others' private information, such as a physical or electronic address, without explicit permission
+* Other conduct which could reasonably be considered inappropriate in a professional setting
 
 ### Our Responsibilities
 

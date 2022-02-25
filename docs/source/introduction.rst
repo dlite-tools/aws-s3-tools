@@ -58,7 +58,7 @@ Using the progress bar:
     from s3_tools import upload_folder_to_prefix
 
     result = upload_folder_to_prefix(
-        bucket='daniel-ferrari',
+        bucket='dlite-tools',
         prefix='aws-s3-tools',
         search_str='*.py',
         threads=2,
