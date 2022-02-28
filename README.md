@@ -2,7 +2,7 @@
 
 ![MIT License](https://img.shields.io/pypi/l/aws-s3-tools)
 [![Test](https://github.com/dlite-tools/aws-s3-tools/actions/workflows/test.yml/badge.svg)](https://github.com/dlite-tools/aws-s3-tools/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/FerrariDG/aws-s3-tools/branch/main/graph/badge.svg?token=YRM26tZexs)](https://codecov.io/gh/FerrariDG/aws-s3-tools)
+[![codecov](https://codecov.io/gh/dlite-tools/aws-s3-tools/branch/main/graph/badge.svg?token=YRM26tZexs)](https://codecov.io/gh/dlite-tools/aws-s3-tools)
 ![Documentation Status](https://readthedocs.org/projects/aws-s3-tools/badge/?version=latest)
 ![Package Version](https://img.shields.io/pypi/v/aws-s3-tools)
 ![Python Version](https://img.shields.io/pypi/pyversions/aws-s3-tools)
