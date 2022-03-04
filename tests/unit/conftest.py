@@ -33,6 +33,15 @@ def s3_client(aws_credentials):
 
 
 @contextmanager
+def create_buckets(s3_client, names):
+    for name in names:
+        s3_client.create_bucket(Bucket=name)
+    yield
+    for name in names:
+        s3_client.delete_bucket(Bucket=name)
+
+
+@contextmanager
 def create_bucket(s3_client, bucket, key=None, data=None, keys_paths=[]):
     s3_client.create_bucket(Bucket=bucket)
 
