@@ -1,4 +1,8 @@
 """AWS S3 Tools."""
+from s3_tools.buckets.list import (
+    list_buckets
+)
+
 from s3_tools.objects.check import (
     object_exists
 )
