@@ -3,6 +3,10 @@ from s3_tools.buckets.create import (
     create_bucket,
 )
 
+from s3_tools.buckets.delete import (
+    delete_bucket,
+)
+
 from s3_tools.buckets.list import (
     list_buckets,
 )
