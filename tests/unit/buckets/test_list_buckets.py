@@ -1,4 +1,4 @@
-"""Unit tests for list.py"""
+"""Unit tests for list buckets."""
 from s3_tools import list_buckets
 
 from tests.unit.conftest import create_buckets
