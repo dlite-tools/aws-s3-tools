@@ -1,6 +1,8 @@
 """Unit tests for create bucket."""
 from s3_tools import create_bucket
 
+from tests.unit.conftest import BUCKET_NAME
+
 import pytest
 from botocore.exceptions import ParamValidationError
 
@@ -8,7 +10,7 @@ from botocore.exceptions import ParamValidationError
 class TestCreate:
 
     def test_create_bucket(self, s3_client):
-        response = create_bucket('myBucket')
+        response = create_bucket(BUCKET_NAME)
 
         assert response is True
 
@@ -18,8 +20,8 @@ class TestCreate:
             create_bucket('')
 
     def test_create_duplicated_bucket(self, s3_client):
-        create_bucket('myBucket')
+        create_bucket(BUCKET_NAME)
 
-        response = create_bucket('myBucket')
+        response = create_bucket(BUCKET_NAME)
 
         assert response is True
