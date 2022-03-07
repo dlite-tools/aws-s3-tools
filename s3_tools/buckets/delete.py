@@ -20,6 +20,12 @@ def delete_bucket(name: str, aws_auth: Dict[str, str] = {}) -> bool:
     -------
     bool
         True if the bucket was deleted, False otherwise.
+
+    Examples
+    --------
+    >>> delete_bucket("myBucket")
+    True
+
     """
     session = boto3.session.Session(**aws_auth)
     s3 = session.client("s3")
