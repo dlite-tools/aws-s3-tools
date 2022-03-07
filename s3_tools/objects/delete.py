@@ -67,7 +67,7 @@ def delete_prefix(bucket: str, prefix: str, dry_run: bool = True, aws_auth: Dict
     >>> delete_prefix(bucket="myBucket", prefix="myData", dry_run=False)
 
     """
-    keys = list_objects(bucket, prefix, aws_auth)
+    keys = list_objects(bucket, prefix, aws_auth=aws_auth)
 
     if dry_run:
         return [key for key in keys]
