@@ -3,6 +3,14 @@ S3 Buckets
 
 All functionalities to deal with AWS S3 Buckets.
 
+Check
+-----
+
+.. automodule:: s3_tools.buckets.check
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Create
 -----
 

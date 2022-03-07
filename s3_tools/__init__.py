@@ -1,4 +1,8 @@
 """AWS S3 Tools."""
+from s3_tools.buckets.check import (
+    bucket_exists,
+)
+
 from s3_tools.buckets.create import (
     create_bucket,
 )
