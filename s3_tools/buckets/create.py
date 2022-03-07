@@ -14,8 +14,7 @@ def create_bucket(name: str, configs: Dict[str, str] = {}, aws_auth: Dict[str, s
 
     configs : Dict[str, str]
         Bucket configurations, by default is empty.
-        To know more about it go to:
-        https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#S3.Client.create_bucket
+        To know more about it check boto3 documentation.
 
     aws_auth : Dict[str, str]
         Contains AWS credentials, by default is empty.

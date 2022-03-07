@@ -11,6 +11,7 @@ Welcome to AWS S3 Tools Documentation
    :caption: Contents
 
    introduction.rst
+   buckets.rst
    objects.rst
 
 
