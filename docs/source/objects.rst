@@ -43,6 +43,14 @@ Move
     :undoc-members:
     :show-inheritance:
 
+Presigned URL
+-------------
+
+.. automodule:: s3_tools.objects.presigned_url
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Read
 ----
 
