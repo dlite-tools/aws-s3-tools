@@ -21,6 +21,11 @@ def delete_bucket(name: str, aws_auth: Dict[str, str] = {}) -> bool:
     bool
         True if the bucket was deleted, False otherwise.
 
+    Raises
+    ------
+    Exception
+        Any problem with the request is raised.
+
     Examples
     --------
     >>> delete_bucket("myBucket")
