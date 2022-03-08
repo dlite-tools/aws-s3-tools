@@ -1,4 +1,4 @@
-"""Create S3 bucket objects presigned url."""
+"""Create presigned URL for S3 bucket objects."""
 from typing import (
     Dict,
     Optional
