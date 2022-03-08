@@ -38,7 +38,7 @@ from s3_tools.objects.move import (
 
 from s3_tools.objects.presigned_url import (
     get_presigned_download_url,
-    get_presigned_post_url,
+    get_presigned_upload_url,
     get_presigned_url
 )
 

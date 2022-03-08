@@ -118,7 +118,7 @@ def get_presigned_download_url(
     )
 
 
-def get_presigned_post_url(
+def get_presigned_upload_url(
     bucket: str,
     key: str,
     fields: Optional[dict] = None,
@@ -163,7 +163,7 @@ def get_presigned_post_url(
     Examples
     --------
     >>> import requests     # To install: pip install requests
-    >>> response = get_presigned_post_url(
+    >>> response = get_presigned_upload_url(
     ...    bucket='myBucket',
     ...    key='myData/myFile.data'
     ... )

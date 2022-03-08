@@ -6,7 +6,7 @@ from botocore.exceptions import ParamValidationError
 
 from s3_tools import (
     get_presigned_download_url,
-    get_presigned_post_url,
+    get_presigned_upload_url,
     get_presigned_url,
     object_exists
 )
@@ -53,7 +53,7 @@ class TestPresignedUrl:
     def test_post_objects_with_presigned_url(self, s3_client):
         with create_bucket(s3_client, BUCKET_NAME):
             before = object_exists(BUCKET_NAME, self.key)
-            response = get_presigned_post_url(bucket=BUCKET_NAME, key=self.key)
+            response = get_presigned_upload_url(bucket=BUCKET_NAME, key=self.key)
             with open(FILENAME, 'rb') as f:
                 files = {'file': (self.key, f)}
                 post_response = requests.post(response['url'], data=response['fields'], files=files)
@@ -66,4 +66,4 @@ class TestPresignedUrl:
 
     def test_invalid_post_objects_with_presigned_url(self, s3_client):
         with pytest.raises(AttributeError):
-            get_presigned_post_url(bucket=BUCKET_NAME, key=None)
+            get_presigned_upload_url(bucket=BUCKET_NAME, key=None)
