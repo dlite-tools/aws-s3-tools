@@ -63,3 +63,7 @@ class TestPresignedUrl:
         assert post_response.status_code == 204
         assert before is False
         assert after is True
+
+    def test_invalid_post_objects_with_presigned_url(self, s3_client):
+        with pytest.raises(AttributeError):
+            get_presigned_post_url(bucket=BUCKET_NAME, key=None)
