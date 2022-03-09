@@ -12,7 +12,7 @@ Check
    :show-inheritance:
 
 Create
------
+------
 
 .. automodule:: s3_tools.buckets.create
    :members:
