@@ -55,7 +55,7 @@ def download_key_to_file(
 
     Examples
     --------
-    >>> read_object_to_file(
+    >>> download_key_to_file(
     ...     bucket="myBucket",
     ...     key="myData/myFile.data",
     ...     local_filename="theFile.data"
