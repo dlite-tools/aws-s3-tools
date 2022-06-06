@@ -11,6 +11,14 @@ Check
    :undoc-members:
    :show-inheritance:
 
+Copy
+-----
+
+.. automodule:: s3_tools.objects.copy
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Delete
 ------
 
