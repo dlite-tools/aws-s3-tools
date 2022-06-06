@@ -19,6 +19,12 @@ from s3_tools.objects.check import (
     object_exists,
 )
 
+from s3_tools.objects.copy import (
+    copy_object,
+    copy_keys,
+    copy_prefix,
+)
+
 from s3_tools.objects.delete import (
     delete_keys,
     delete_object,
