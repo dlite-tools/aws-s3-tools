@@ -13,7 +13,7 @@ AWS S3 Tools is a Python package to make it easier to interact with S3 objects, 
 - Check if an S3 object exists
 - Download/upload S3 objects to/from local files
 - Read/write S3 objects into/from Python variables
-- Delete/Move S3 objects
+- Delete/move/copy S3 objects
 
 The AWS S3 authentication is done via boto3 package, via environment variables, aws config file, or parameters.
 All S3 objects functions, in this package, have the option to set AWS Session authentication by passing the following dictionary on the `aws_auth` parameter, with the schema below (not all field are required).
