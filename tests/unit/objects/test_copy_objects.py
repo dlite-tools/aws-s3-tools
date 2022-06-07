@@ -110,7 +110,7 @@ class TestCopy:
             source_before = [object_exists(BUCKET_NAME, key) for key in self.source_keys]
             dest_before = list_objects(self.destination_bucket, prefix='prefix')
 
-            copy_prefix(BUCKET_NAME, 'prefix', self.destination_bucket, '*02*')
+            copy_prefix(BUCKET_NAME, 'prefix', self.destination_bucket, filter_keys='*02*')
 
             source_after = [object_exists(BUCKET_NAME, key) for key in self.source_keys]
             dest_after = list_objects(self.destination_bucket, prefix='prefix')
@@ -126,7 +126,7 @@ class TestCopy:
             source_before = [object_exists(BUCKET_NAME, key) for key in self.source_keys]
             dest_before = list_objects(self.destination_bucket, prefix='files')
 
-            copy_prefix(BUCKET_NAME, 'prefix', self.destination_bucket, '*', ('prefix', 'files'))
+            copy_prefix(BUCKET_NAME, 'prefix', self.destination_bucket, ('prefix', 'files'), '*')
 
             source_after = [object_exists(BUCKET_NAME, key) for key in self.source_keys]
             dest_after_new_prefix = list_objects(self.destination_bucket, prefix='files')

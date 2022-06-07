@@ -132,8 +132,8 @@ def copy_prefix(
     source_bucket: str,
     source_prefix: str,
     destination_bucket: str,
-    source_search_match: Optional[str] = None,
-    replace_in_prefix: Optional[Tuple[str, str]] = None,
+    change_prefix: Optional[Tuple[str, str]] = None,
+    filter_keys: Optional[str] = None,
     threads: int = 5,
     aws_auth: Dict[str, str] = {}
 ) -> None:
@@ -150,13 +150,13 @@ def copy_prefix(
     destination_bucket : str
         S3 destination bucket.
 
-    source_search_match : str, optional
-        Basic search string to filter out keys on result (uses Unix shell-style wildcards), by default is None.
-        For more about the search check "fnmatch" package.
-
-    replace_in_prefix : Tuple[str, str], optional
+    change_prefix : Tuple[str, str], optional
         Text to be replaced in keys prefixes, by default is None.
         The first element is the text to be replaced, the second is the replacement text.
+
+    filter_keys : str, optional
+        Basic search string to filter out keys on result (uses Unix shell-style wildcards), by default is None.
+        For more about the search check "fnmatch" package.
 
     threads : int, optional
         Number of parallel uploads, by default 5.
@@ -170,20 +170,20 @@ def copy_prefix(
     ...     source_bucket='MyBucket',
     ...     source_prefix='myFiles',
     ...     destination_bucket='OtherBucket',
-    ...     source_search_match='*images*',
-    ...     replace_in_prefix=('myFiles', 'backup')
+    ...     filter_keys='*images*',
+    ...     change_prefix=('myFiles', 'backup')
     ... )
 
     """
     source_keys = list_objects(
         bucket=source_bucket,
         prefix=source_prefix,
-        search_str=source_search_match,
+        search_str=filter_keys,
         aws_auth=aws_auth
     )
 
-    destination_keys = source_keys if replace_in_prefix is None else [
-        key.replace(replace_in_prefix[0], replace_in_prefix[1])
+    destination_keys = source_keys if change_prefix is None else [
+        key.replace(change_prefix[0], change_prefix[1])
         for key in source_keys
     ]
 
