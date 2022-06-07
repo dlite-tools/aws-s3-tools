@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aws-s3-tools"
-version = "0.1.1"
+version = "0.2.0"
 description = "AWS S3 tools package"
 authors = ["Daniel Ferrari"]
 maintainers = ["Daniel Ferrari, Carlos Alves, Tomás Osório"]
