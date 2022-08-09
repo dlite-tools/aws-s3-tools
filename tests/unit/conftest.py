@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from pathlib import Path
 from typing import (
     Dict,
     List
@@ -46,10 +47,10 @@ def create_bucket(s3_client, bucket, key=None, data=None, keys_paths=[]):
     s3_client.create_bucket(Bucket=bucket)
 
     if key and data:
-        s3_client.put_object(Bucket=bucket, Key=key, Body=data)
+        s3_client.put_object(Bucket=bucket, Key=Path(key).as_posix(), Body=data)
 
     for key, fn in keys_paths:
-        s3_client.upload_file(Bucket=bucket, Key=key, Filename=fn)
+        s3_client.upload_file(Bucket=bucket, Key=Path(key).as_posix(), Filename=fn)
 
     yield
 
@@ -89,7 +90,7 @@ def create_files(path: str, files: Dict) -> List[str]:
         root
         ├── file.root
         ├── folderA
-        │   └── file.A2
+        │   └── file.A2
         ├── folderB
         └── folderC
             └── folderC1
