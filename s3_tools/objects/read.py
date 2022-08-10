@@ -1,14 +1,16 @@
 """Read S3 objects into variables."""
+from pathlib import Path
 from typing import (
     Any,
-    Dict
+    Dict,
+    Union,
 )
 
 import boto3
 import ujson
 
 
-def read_object_to_bytes(bucket: str, key: str, aws_auth: Dict[str, str] = {}) -> bytes:
+def read_object_to_bytes(bucket: str, key: Union[str, Path], aws_auth: Dict[str, str] = {}) -> bytes:
     """Retrieve one object from AWS S3 bucket as a byte array.
 
     Parameters
@@ -16,7 +18,7 @@ def read_object_to_bytes(bucket: str, key: str, aws_auth: Dict[str, str] = {}) -
     bucket: str
         AWS S3 bucket where the object is stored.
 
-    key: str
+    key: Union[str, Path]
         Key where the object is stored.
 
     aws_auth: Dict[str, str]
@@ -31,19 +33,19 @@ def read_object_to_bytes(bucket: str, key: str, aws_auth: Dict[str, str] = {}) -
     --------
     >>> read_object_to_bytes(
     ...     bucket="myBucket",
-    ...     key="myData/myFile.data"
+    ...     key="myData/myFile.data",
     ... )
     b"The file content"
 
     """
     session = boto3.session.Session(**aws_auth)
     s3 = session.client("s3")
-    obj = s3.get_object(Bucket=bucket, Key=key)
+    obj = s3.get_object(Bucket=bucket, Key=Path(key).as_posix())
 
     return obj["Body"].read()
 
 
-def read_object_to_text(bucket: str, key: str, aws_auth: Dict[str, str] = {}) -> str:
+def read_object_to_text(bucket: str, key: Union[str, Path], aws_auth: Dict[str, str] = {}) -> str:
     """Retrieve one object from AWS S3 bucket as a string.
 
     Parameters
@@ -51,7 +53,7 @@ def read_object_to_text(bucket: str, key: str, aws_auth: Dict[str, str] = {}) ->
     bucket: str
         AWS S3 bucket where the object is stored.
 
-    key: str
+    key: Union[str, Path]
         Key where the object is stored.
 
     aws_auth: Dict[str, str]
@@ -75,7 +77,7 @@ def read_object_to_text(bucket: str, key: str, aws_auth: Dict[str, str] = {}) ->
     return data.decode("utf-8")
 
 
-def read_object_to_dict(bucket: str, key: str, aws_auth: Dict[str, str] = {}) -> Dict[Any, Any]:
+def read_object_to_dict(bucket: str, key: Union[str, Path], aws_auth: Dict[str, str] = {}) -> Dict[Any, Any]:
     """Retrieve one object from AWS S3 bucket as a dictionary.
 
     Parameters
@@ -83,7 +85,7 @@ def read_object_to_dict(bucket: str, key: str, aws_auth: Dict[str, str] = {}) ->
     bucket: str
         AWS S3 bucket where the object is stored.
 
-    key: str
+    key: Union[str, Path]
         Key where the object is stored.
 
     aws_auth: Dict[str, str]
@@ -98,7 +100,7 @@ def read_object_to_dict(bucket: str, key: str, aws_auth: Dict[str, str] = {}) ->
     --------
     >>> read_object_to_dict(
     ...     bucket="myBucket",
-    ...     key="myData/myFile.json"
+    ...     key="myData/myFile.json",
     ... )
     {"key": "value", "1": "text"}
 
