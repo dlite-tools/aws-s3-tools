@@ -1,20 +1,21 @@
 """Unit tests for presigned_url.py"""
-import requests
+from pathlib import Path
 
-import pytest
 from botocore.exceptions import ParamValidationError
+import pytest
+import requests
 
 from s3_tools import (
     get_presigned_download_url,
     get_presigned_upload_url,
     get_presigned_url,
-    object_exists
+    object_exists,
 )
 
 from tests.unit.conftest import (
     BUCKET_NAME,
     FILENAME,
-    create_bucket
+    create_bucket,
 )
 
 
@@ -31,9 +32,10 @@ class TestPresignedUrl:
             assert url is not None
             assert response.status_code == 404
 
-    def test_download_object_with_presigned_url(self, s3_client):
-        with create_bucket(s3_client, BUCKET_NAME, keys_paths=[(self.key, FILENAME)]):
-            url = get_presigned_download_url(bucket=BUCKET_NAME, key=self.key)
+    @pytest.mark.parametrize("key", [key, Path(key)])
+    def test_download_object_with_presigned_url(self, s3_client, key):
+        with create_bucket(s3_client, BUCKET_NAME, keys_paths=[(key, FILENAME)]):
+            url = get_presigned_download_url(bucket=BUCKET_NAME, key=key)
             response = requests.get(url)
 
         assert url is not None
@@ -52,21 +54,24 @@ class TestPresignedUrl:
             url = get_presigned_url(client_method='list_objects')
             requests.get(url)
 
-    def test_upload_objects_with_presigned_url(self, s3_client):
+    @pytest.mark.parametrize("key", [key, Path(key)])
+    def test_upload_objects_with_presigned_url(self, s3_client, key):
         with create_bucket(s3_client, BUCKET_NAME):
             before = object_exists(BUCKET_NAME, self.key)
-            response = get_presigned_upload_url(bucket=BUCKET_NAME, key=self.key)
+            response = get_presigned_upload_url(bucket=BUCKET_NAME, key=key)
+            print(response)
             with open(FILENAME, 'rb') as f:
-                files = {'file': (self.key, f)}
+                files = {'file': (Path(key).as_posix(), f)}
                 post_response = requests.post(response['url'], data=response['fields'], files=files)
 
-            after = object_exists(BUCKET_NAME, self.key)
+            after = object_exists(BUCKET_NAME, key)
 
         assert response is not None
         assert post_response.status_code == 204
         assert before is False
         assert after is True
 
-    def test_invalid_upload_objects_with_presigned_url(self, s3_client):
-        with pytest.raises(AttributeError):
-            get_presigned_upload_url(bucket=BUCKET_NAME, key=None)
+    @pytest.mark.parametrize("key", [None, int])
+    def test_invalid_upload_objects_with_presigned_url(self, s3_client, key):
+        with pytest.raises((AttributeError, TypeError)):
+            get_presigned_upload_url(bucket=BUCKET_NAME, key=key)

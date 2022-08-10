@@ -1,7 +1,9 @@
 """Create presigned URL for S3 bucket objects."""
+from pathlib import Path
 from typing import (
     Dict,
-    Optional
+    Optional,
+    Union,
 )
 
 import boto3
@@ -12,7 +14,7 @@ def get_presigned_url(
     method_parameters: Optional[dict] = None,
     http_method: Optional[str] = None,
     expiration: int = 300,
-    aws_auth: Dict[str, str] = {}
+    aws_auth: Dict[str, str] = {},
 ) -> str:
     """Generate a presigned URL to invoke an S3.Client method.
 
@@ -47,7 +49,7 @@ def get_presigned_url(
     --------
     >>> get_presigned_url(
     ...    client_method='list_objects',
-    ...    method_parameters={'Bucket': 'myBucket'}
+    ...    method_parameters={'Bucket': 'myBucket'},
     ... )
     https://myBucket.s3.amazonaws.com/?encoding-type=url&AWSAccessKeyId=ASI&Signature=5JLAcSKQ%3D&x-amz-security-token=FwoGZXIvY%&Expires=1646759818
 
@@ -60,7 +62,7 @@ def get_presigned_url(
             ClientMethod=client_method,
             Params=method_parameters,
             ExpiresIn=expiration,
-            HttpMethod=http_method
+            HttpMethod=http_method,
         )
     except Exception as error:
         raise error
@@ -70,9 +72,9 @@ def get_presigned_url(
 
 def get_presigned_download_url(
     bucket: str,
-    key: str,
+    key: Union[str, Path],
     expiration: int = 300,
-    aws_auth: Dict[str, str] = {}
+    aws_auth: Dict[str, str] = {},
 ) -> str:
     """Generate a presigned URL to download an S3 object.
 
@@ -81,7 +83,7 @@ def get_presigned_download_url(
     bucket: str
         AWS S3 bucket where the object is stored.
 
-    key: str
+    key: Union[str, Path]
         Key for the object that will be downloaded.
 
     expiration: int
@@ -105,26 +107,26 @@ def get_presigned_download_url(
     >>> import requests     # To install: pip install requests
     >>> url = get_presigned_download_url(
     ...    bucket='myBucket',
-    ...    key='myData/myFile.data'
+    ...    key='myData/myFile.data',
     ... )
     >>> response = requests.get(url)
 
     """
     return get_presigned_url(
         client_method='get_object',
-        method_parameters={'Bucket': bucket, 'Key': key},
+        method_parameters={'Bucket': bucket, 'Key': Path(key).as_posix()},
         expiration=expiration,
-        aws_auth=aws_auth
+        aws_auth=aws_auth,
     )
 
 
 def get_presigned_upload_url(
     bucket: str,
-    key: str,
+    key: Union[str, Path],
     fields: Optional[dict] = None,
     conditions: Optional[list] = None,
     expiration: int = 300,
-    aws_auth: Dict[str, str] = {}
+    aws_auth: Dict[str, str] = {},
 ) -> dict:
     """Generate a presigned URL S3 POST request to upload a file.
 
@@ -133,7 +135,7 @@ def get_presigned_upload_url(
     bucket: str
         AWS S3 bucket where the object will be stored.
 
-    key: str
+    key: Union[str, Path]
         Key for the object that will will be stored.
 
     fields: Optional[dict]
@@ -165,20 +167,23 @@ def get_presigned_upload_url(
     >>> import requests     # To install: pip install requests
     >>> response = get_presigned_upload_url(
     ...    bucket='myBucket',
-    ...    key='myData/myFile.data'
+    ...    key='myData/myFile.data',
     ... )
     >>> with open('myFile.data', 'rb') as f:
     ...    files = {'file': ('myFile.data', f)}
     ...    http_response = requests.post(response['url'], data=response['fields'], files=files)
 
     """
+    if key is None:
+        raise AttributeError("Key is required.")
+
     session = boto3.session.Session(**aws_auth)
     s3 = session.client("s3")
 
     try:
         response = s3.generate_presigned_post(
             Bucket=bucket,
-            Key=key,
+            Key=Path(key).as_posix(),
             Fields=fields,
             Conditions=conditions,
             ExpiresIn=expiration,
