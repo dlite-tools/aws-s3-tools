@@ -5,24 +5,25 @@ from typing import (
     Any,
     Dict,
     List,
-    Tuple
+    Tuple,
+    Union,
 )
 
 import boto3
 
 from s3_tools.utils import (
     _create_progress_bar,
-    _get_future_output
+    _get_future_output,
 )
 
 
 def upload_file_to_key(
     bucket: str,
-    key: str,
-    local_filename: str,
+    key: Union[str, Path],
+    local_filename: Union[str, Path],
     progress=None,  # type: ignore # No import if extra not installed
     task_id: int = -1,
-    aws_auth: Dict[str, str] = {}
+    aws_auth: Dict[str, str] = {},
 ) -> str:
     """Upload one file from local disk and store into AWS S3 bucket.
 
@@ -31,10 +32,10 @@ def upload_file_to_key(
     bucket: str
         AWS S3 bucket where the object will be stored.
 
-    key: str
+    key: Union[str, Path]
         Key where the object will be stored.
 
-    local_filename: str
+    local_filename: Union[str, Path]
         Local file from where the data will be uploaded.
 
     progress: rich.Progress
@@ -56,14 +57,14 @@ def upload_file_to_key(
     >>> write_object_from_file(
     ...     bucket="myBucket",
     ...     key="myFiles/music.mp3",
-    ...     local_filename="files/music.mp3"
+    ...     local_filename="files/music.mp3",
     ... )
     http://s3.amazonaws.com/myBucket/myFiles/music.mp3
 
     """
     session = boto3.session.Session(**aws_auth)
     s3 = session.client("s3")
-    s3.upload_file(Bucket=bucket, Key=key, Filename=local_filename)
+    s3.upload_file(Bucket=bucket, Key=Path(key).as_posix(), Filename=Path(local_filename).as_posix())
     if progress:
         progress.update(task_id, advance=1)
     return "{}/{}/{}".format(s3.meta.endpoint_url, bucket, key)
@@ -71,11 +72,12 @@ def upload_file_to_key(
 
 def upload_files_to_keys(
     bucket: str,
-    paths_keys: List[Tuple[str, str]],
+    paths_keys: List[Tuple[Union[str, Path], Union[str, Path]]],
     threads: int = 5,
     show_progress: bool = False,
-    aws_auth: Dict[str, str] = {}
-) -> List[Tuple[str, str, Any]]:
+    aws_auth: Dict[str, str] = {},
+    as_paths: bool = False,
+) -> List[Tuple[Union[str, Path], Union[str, Path], Any]]:
     """Upload list of files to specific objects.
 
     Parameters
@@ -83,7 +85,7 @@ def upload_files_to_keys(
     bucket : str
         AWS S3 bucket where the objects will be stored.
 
-    paths_keys : List[Tuple[str, str]]
+    paths_keys : List[Tuple[Union[str, Path], Union[str, Path]]]
         List with a tuple of local path to be uploaded and S3 key destination.
         e.g. [("Local_Path", "S3_Key"), ("Local_Path", "S3_Key")]
 
@@ -97,9 +99,12 @@ def upload_files_to_keys(
     aws_auth: Dict[str, str]
         Contains AWS credentials, by default is empty.
 
+    as_paths: bool
+        If True, the keys are returned as Path objects, otherwise as strings, by default is False.
+
     Returns
     -------
-    List[Tuple[str, str, Any]]
+    List[Tuple[Union[str, Path], Union[str, Path], Any]]
         A list with tuples formed by the "Local_Path", "S3_Key", and the result of the upload.
         If successful will have True, if not will contain the error message.
         Attention, the output list may not follow the same input order.
@@ -111,13 +116,13 @@ def upload_files_to_keys(
     ...     paths_keys=[
     ...         ("MyFiles/myFile.data", "myData/myFile.data"),
     ...         ("MyFiles/myMusic/awesome.mp3", "myData/myMusic/awesome.mp3"),
-    ...         ("MyFiles/myDocs/paper.doc", "myData/myDocs/paper.doc")
-    ...     ]
+    ...         ("MyFiles/myDocs/paper.doc", "myData/myDocs/paper.doc"),
+    ...     ],
     ... )
     [
         ("MyFiles/myMusic/awesome.mp3", "myData/myMusic/awesome.mp3", True),
         ("MyFiles/myDocs/paper.doc", "myData/myDocs/paper.doc", True),
-        ("MyFiles/myFile.data", "myData/myFile.data", True)
+        ("MyFiles/myFile.data", "myData/myFile.data", True),
     ]
 
     """
@@ -139,7 +144,7 @@ def upload_files_to_keys(
                 filename,
                 progress,
                 task_id,
-                aws_auth
+                aws_auth,
             ): {"s3": s3_key, "fn": filename}
             for filename, s3_key in paths_keys
         }
@@ -152,18 +157,22 @@ def upload_files_to_keys(
     if show_progress:
         progress.stop()
 
+    if as_paths:
+        output = [(Path(key), Path(fn), result) for key, fn, result in output]
+
     return output
 
 
 def upload_folder_to_prefix(
     bucket: str,
-    prefix: str,
-    folder: str,
+    prefix: Union[str, Path],
+    folder: Union[str, Path],
     search_str: str = "*",
     threads: int = 5,
     show_progress: bool = False,
-    aws_auth: Dict[str, str] = {}
-) -> List[Tuple[str, str, Any]]:
+    aws_auth: Dict[str, str] = {},
+    as_paths: bool = False,
+) -> List[Tuple[Union[str, Path], Union[str, Path], Any]]:
     """Upload local folder to a S3 prefix.
 
     Function to upload all files for a given folder (recursive)
@@ -175,10 +184,10 @@ def upload_folder_to_prefix(
     bucket : str
         AWS S3 bucket where the object will be stored.
 
-    prefix : str
+    prefix : Union[str, Path]
         Prefix where the objects will be under.
 
-    folder : str
+    folder : Union[str, Path]
         Local folder path where files are stored.
         Prefer to use the full path for the folder.
 
@@ -196,9 +205,12 @@ def upload_folder_to_prefix(
     aws_auth: Dict[str, str]
         Contains AWS credentials, by default is empty.
 
+    as_paths: bool
+        If True, the keys are returned as Path objects, otherwise as strings, by default is False.
+
     Returns
     -------
-    List[Tuple[str, str, Any]]
+    List[Tuple[Union[str, Path], Union[str, Path], Any]]
         A list with tuples formed by the "Local_Path", "S3_Key", and the result of the upload.
         If successful will have True, if not will contain the error message.
 
@@ -212,18 +224,18 @@ def upload_folder_to_prefix(
     [
         ("/usr/files/music.mp3", "myFiles/music.mp3", True),
         ("/usr/files/awesome.wav", "myFiles/awesome.wav", True),
-        ("/usr/files/data/metadata.json", "myFiles/data/metadata.json", True)
+        ("/usr/files/data/metadata.json", "myFiles/data/metadata.json", True),
     ]
 
     """
     paths = [p for p in Path(folder).rglob(search_str) if p.is_file()]
 
-    paths_keys = [
+    paths_keys: List[Tuple[Union[str, Path], Union[str, Path]]] = [
         (
             p.as_posix(),
-            Path(prefix).joinpath(p.relative_to(Path(folder))).as_posix()  # S3 key
+            Path(prefix).joinpath(p.relative_to(Path(folder))).as_posix(),  # S3 key
         )
         for p in paths
     ]
 
-    return upload_files_to_keys(bucket, paths_keys, threads, show_progress, aws_auth)
+    return upload_files_to_keys(bucket, paths_keys, threads, show_progress, aws_auth, as_paths)

@@ -66,14 +66,14 @@ def create_bucket(s3_client, bucket, key=None, data=None, keys_paths=[]):
     s3_client.delete_bucket(Bucket=bucket)
 
 
-def create_files(as_paths: bool = False) -> List[Union[str, Path]]:
+def create_files(as_path: bool = False) -> List[Union[str, Path]]:
     """Create folder structure.
 
     The function creates a folder structure with files under a path.
 
     Parameters
     ----------
-    as_paths: bool
+    as_path: bool
         If True, the keys are returned as Path objects, otherwise as strings, by default is False.
 
 
@@ -109,7 +109,7 @@ def create_files(as_paths: bool = False) -> List[Union[str, Path]]:
             fn.mkdir(parents=True, exist_ok=True)
 
     return [
-        Path(key) if as_paths else key
+        Path(key) if as_path else key
         for key, content in files.items()
         if len(content) > 0
     ]

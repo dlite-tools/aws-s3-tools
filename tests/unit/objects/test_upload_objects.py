@@ -1,4 +1,5 @@
 """Unit tests for upload.py"""
+from pathlib import Path
 import shutil
 
 import pytest
@@ -8,7 +9,7 @@ from s3_tools import (
     upload_file_to_key,
     upload_files_to_keys,
     upload_folder_to_prefix,
-    object_exists
+    object_exists,
 )
 
 from tests.unit.conftest import (
@@ -16,12 +17,16 @@ from tests.unit.conftest import (
     EMPTY_FILE,
     FILENAME,
     create_bucket,
-    create_files
+    create_files,
 )
 
 
 class TestUpload:
     key = "prefix/object"
+    root_folder = 'TEST_ROOT_A'
+
+    keys = [(FILENAME, f"prefix/mock_{i}.csv") for i in range(4)]
+    keys_paths = [(Path(fn), Path(key)) for fn, key in keys]
 
     def test_upload_nonexisting_bucket(self, s3_client):
         with pytest.raises(S3UploadFailedError):
@@ -32,59 +37,53 @@ class TestUpload:
             with pytest.raises(FileNotFoundError):
                 upload_file_to_key(BUCKET_NAME, self.key, "/tmp/nonexisting.file")
 
-    def test_upload_file(self, s3_client):
+    @pytest.mark.parametrize("key", [key, Path(key)])
+    def test_upload_file(self, s3_client, key):
         with create_bucket(s3_client, BUCKET_NAME):
-            before = object_exists(BUCKET_NAME, self.key)
-            upload_file_to_key(BUCKET_NAME, self.key, FILENAME)
-            after = object_exists(BUCKET_NAME, self.key)
+            before = object_exists(BUCKET_NAME, key)
+            upload_file_to_key(BUCKET_NAME, key, FILENAME)
+            after = object_exists(BUCKET_NAME, key)
 
         assert before is False
         assert after is True
 
-    def test_upload_empty_file(self, s3_client):
+    @pytest.mark.parametrize("key", [key, Path(key)])
+    def test_upload_empty_file(self, s3_client, key):
         with create_bucket(s3_client, BUCKET_NAME):
-            before = object_exists(BUCKET_NAME, self.key)
-            upload_file_to_key(BUCKET_NAME, self.key, EMPTY_FILE)
-            after = object_exists(BUCKET_NAME, self.key)
+            before = object_exists(BUCKET_NAME, key)
+            upload_file_to_key(BUCKET_NAME, key, EMPTY_FILE)
+            after = object_exists(BUCKET_NAME, key)
 
         assert before is False
         assert after is True
 
-    @pytest.mark.parametrize('show', [False, True])
-    def test_upload_files_to_keys(self, s3_client, show):
+    @pytest.mark.parametrize('keys,show', [
+        (keys, False),
+        (keys_paths, True),
+    ])
+    def test_upload_files_to_keys(self, s3_client, keys, show):
         if show:
             pytest.importorskip("rich")
 
-        lst = [(FILENAME, f"prefix/mock_{i}.csv") for i in range(4)]
         with create_bucket(s3_client, BUCKET_NAME):
-            before = [object_exists(BUCKET_NAME, key) for fn, key in lst]
-            upload_files_to_keys(BUCKET_NAME, lst, show_progress=show)
-            after = [object_exists(BUCKET_NAME, key) for fn, key in lst]
+            before = [object_exists(BUCKET_NAME, key) for fn, key in keys]
+            upload_files_to_keys(BUCKET_NAME, keys, show_progress=show)
+            after = [object_exists(BUCKET_NAME, key) for fn, key in keys]
 
         assert all(before) is False
         assert all(after) is True
 
-    def test_upload_folder_to_prefix(self, s3_client):
-        root_folder = 'TEST_ROOT_A'
-        structure = {
-            "file.root": "This file is in the root folder",
-            "folderA": {
-                "file.A1": "This file is in the folder A - file A1",
-                "file.A2": "This file is in the folder A - file A2"
-            },
-            "folderB": {},
-            "folderC": {
-                "folderD": {
-                    "file.D1": "This file is in the folder D - file D1"
-                }
-            }
-        }
-        paths = create_files(root_folder, structure)
+    @pytest.mark.parametrize('prefix,as_path', [
+        ("prefix", False),
+        (Path("prefix"), True),
+    ])
+    def test_upload_folder_to_prefix(self, s3_client, prefix, as_path):
+        paths = create_files(as_path)
 
         with create_bucket(s3_client, BUCKET_NAME):
-            response = upload_folder_to_prefix(BUCKET_NAME, "prefix", root_folder)
+            response = upload_folder_to_prefix(BUCKET_NAME, prefix, self.root_folder, as_paths=as_path)
 
-        shutil.rmtree(root_folder)
+        shutil.rmtree(self.root_folder)
 
         assert len(response) == 4
         # The response must content all paths
