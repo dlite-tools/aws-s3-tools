@@ -87,7 +87,7 @@ def list_objects(
 
         continuation_token = response.get("NextContinuationToken")
 
-    if search_str:
+    if isinstance(search_str, str):
         keys = fnmatch.filter(keys, search_str)
 
     return keys if not as_paths else [Path(key) for key in keys]
