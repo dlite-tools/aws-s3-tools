@@ -1,11 +1,15 @@
 """Check objects on S3 bucket."""
-from typing import Dict
+from pathlib import Path
+from typing import (
+    Dict,
+    Union,
+)
 
 import boto3
 from botocore.exceptions import ClientError
 
 
-def object_exists(bucket: str, key: str, aws_auth: Dict[str, str] = {}) -> bool:
+def object_exists(bucket: str, key: Union[str, Path], aws_auth: Dict[str, str] = {}) -> bool:
     """Check if an object exists for a given bucket and key.
 
     Parameters
@@ -13,7 +17,7 @@ def object_exists(bucket: str, key: str, aws_auth: Dict[str, str] = {}) -> bool:
     bucket : str
         Bucket name where the object is stored.
 
-    key : str
+    key : Union[str, Path]
         Full key for the object.
 
     aws_auth: Dict[str, str]
@@ -38,7 +42,7 @@ def object_exists(bucket: str, key: str, aws_auth: Dict[str, str] = {}) -> bool:
     s3 = session.client("s3")
 
     try:
-        s3.head_object(Bucket=bucket, Key=key)
+        s3.head_object(Bucket=bucket, Key=Path(key).as_posix())
     except Exception as error:
         if isinstance(error, ClientError) and (error.response["Error"]["Code"] == "404"):
             return False

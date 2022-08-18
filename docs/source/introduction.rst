@@ -14,12 +14,13 @@ All S3 objects functions, in this package, have the option to set AWS Session au
 To understand more about AWS authentication mechanism, `read boto3 documentation <https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html>`_.
 
 .. code-block:: python
+
     aws_auth = {
         'region_name': 'REGION',
         'aws_access_key_id': 'ACCESS_KEY',
         'aws_secret_access_key': 'SECRET_KEY',
         'aws_session_token': 'SESSION_TOKEN',
-        'profile_name': 'PROFILE_NAME'
+        'profile_name': 'PROFILE_NAME',
     }
 
 Installation

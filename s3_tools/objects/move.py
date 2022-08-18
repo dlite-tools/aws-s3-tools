@@ -1,8 +1,10 @@
 """Move S3 objects."""
+from pathlib import Path
 from concurrent import futures
 from typing import (
     Dict,
-    List
+    List,
+    Union,
 )
 
 import boto3
@@ -12,10 +14,10 @@ from s3_tools.objects.delete import delete_object
 
 def move_object(
     source_bucket: str,
-    source_key: str,
+    source_key: Union[str, Path],
     destination_bucket: str,
-    destination_key: str,
-    aws_auth: Dict[str, str] = {}
+    destination_key: Union[str, Path],
+    aws_auth: Dict[str, str] = {},
 ) -> None:
     """Move S3 object from source bucket and key to destination.
 
@@ -24,13 +26,13 @@ def move_object(
     source_bucket : str
         S3 bucket where the object is stored.
 
-    source_key : str
+    source_key : Union[str, Path]
         S3 key where the object is referenced.
 
     destination_bucket : str
         S3 destination bucket.
 
-    destination_key : str
+    destination_key : Union[str, Path]
         S3 destination key.
 
     aws_auth: Dict[str, str]
@@ -42,7 +44,7 @@ def move_object(
     ...    source_bucket='bucket',
     ...    source_key='myFiles/song.mp3',
     ...    destination_bucket='bucket',
-    ...    destination_key='myMusic/song.mp3'
+    ...    destination_key='myMusic/song.mp3',
     ... )
 
     """
@@ -50,9 +52,9 @@ def move_object(
     s3 = session.resource("s3")
 
     s3.meta.client.copy(
-        {'Bucket': source_bucket, 'Key': source_key},
+        {'Bucket': source_bucket, 'Key': Path(source_key).as_posix()},
         destination_bucket,
-        destination_key
+        Path(destination_key).as_posix(),
     )
 
     delete_object(source_bucket, source_key, aws_auth)
@@ -60,11 +62,11 @@ def move_object(
 
 def move_keys(
     source_bucket: str,
-    source_keys: List[str],
+    source_keys: List[Union[str, Path]],
     destination_bucket: str,
-    destination_keys: List[str],
+    destination_keys: List[Union[str, Path]],
     threads: int = 5,
-    aws_auth: Dict[str, str] = {}
+    aws_auth: Dict[str, str] = {},
 ) -> None:
     """Move a list of S3 objects from source bucket to destination.
 
@@ -73,13 +75,13 @@ def move_keys(
     source_bucket : str
         S3 bucket where the objects are stored.
 
-    source_keys : List[str]
+    source_keys : List[Union[str, Path]]
         S3 keys where the objects are referenced.
 
     destination_bucket : str
         S3 destination bucket.
 
-    destination_keys : List[str]
+    destination_keys : List[Union[str, Path]]
         S3 destination keys.
 
     threads : int, optional
@@ -102,13 +104,13 @@ def move_keys(
     ...     source_bucket='bucket',
     ...     source_keys=[
     ...         'myFiles/song.mp3',
-    ...         'myFiles/photo.jpg'
+    ...         'myFiles/photo.jpg',
     ...     ],
     ...     destination_bucket='bucket',
     ...     destination_keys=[
     ...         'myMusic/song.mp3',
-    ...         'myPhotos/photo.jpg'
-    ...     ]
+    ...         'myPhotos/photo.jpg',
+    ...     ],
     ... )
 
     """

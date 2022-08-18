@@ -1,10 +1,12 @@
 """Copy S3 objects."""
 from concurrent import futures
+from pathlib import Path
 from typing import (
     Dict,
     List,
     Optional,
     Tuple,
+    Union,
 )
 
 import boto3
@@ -14,9 +16,9 @@ from s3_tools.objects.list import list_objects
 
 def copy_object(
     source_bucket: str,
-    source_key: str,
+    source_key: Union[str, Path],
     destination_bucket: str,
-    destination_key: str,
+    destination_key: Union[str, Path],
     aws_auth: Dict[str, str] = {}
 ) -> None:
     """Copy S3 object from source bucket and key to destination.
@@ -26,13 +28,13 @@ def copy_object(
     source_bucket : str
         S3 bucket where the object is stored.
 
-    source_key : str
+    source_key : Union[str, Path]
         S3 key where the object is referenced.
 
     destination_bucket : str
         S3 destination bucket.
 
-    destination_key : str
+    destination_key : Union[str, Path]
         S3 destination key.
 
     aws_auth: Dict[str, str]
@@ -44,7 +46,7 @@ def copy_object(
     ...    source_bucket='bucket',
     ...    source_key='myFiles/song.mp3',
     ...    destination_bucket='bucket',
-    ...    destination_key='myMusic/song.mp3'
+    ...    destination_key='myMusic/song.mp3',
     ... )
 
     """
@@ -52,17 +54,17 @@ def copy_object(
     s3 = session.resource("s3")
 
     s3.meta.client.copy(
-        {'Bucket': source_bucket, 'Key': source_key},
+        {'Bucket': source_bucket, 'Key': Path(source_key).as_posix()},
         destination_bucket,
-        destination_key
+        Path(destination_key).as_posix()
     )
 
 
 def copy_keys(
     source_bucket: str,
-    source_keys: List[str],
+    source_keys: List[Union[str, Path]],
     destination_bucket: str,
-    destination_keys: List[str],
+    destination_keys: List[Union[str, Path]],
     threads: int = 5,
     aws_auth: Dict[str, str] = {}
 ) -> None:
@@ -73,13 +75,13 @@ def copy_keys(
     source_bucket : str
         S3 bucket where the objects are stored.
 
-    source_keys : List[str]
+    source_keys : List[Union[str, Path]]
         S3 keys where the objects are referenced.
 
     destination_bucket : str
         S3 destination bucket.
 
-    destination_keys : List[str]
+    destination_keys : List[Union[str, Path]]
         S3 destination keys.
 
     threads : int, optional
@@ -102,12 +104,12 @@ def copy_keys(
     ...     source_bucket='bucket',
     ...     source_keys=[
     ...         'myFiles/song.mp3',
-    ...         'myFiles/photo.jpg'
+    ...         Path('myFiles/photo.jpg'),
     ...     ],
     ...     destination_bucket='bucket',
     ...     destination_keys=[
-    ...         'myMusic/song.mp3',
-    ...         'myPhotos/photo.jpg'
+    ...         Path('myMusic/song.mp3'),
+    ...         'myPhotos/photo.jpg',
     ...     ]
     ... )
 
@@ -130,9 +132,9 @@ def copy_keys(
 
 def copy_prefix(
     source_bucket: str,
-    source_prefix: str,
+    source_prefix: Union[str, Path],
     destination_bucket: str,
-    change_prefix: Optional[Tuple[str, str]] = None,
+    change_prefix: Optional[Tuple[Union[str, Path], Union[str, Path]]] = None,
     filter_keys: Optional[str] = None,
     threads: int = 5,
     aws_auth: Dict[str, str] = {}
@@ -144,13 +146,13 @@ def copy_prefix(
     source_bucket : str
         S3 bucket where the objects are stored.
 
-    source_prefix : str
+    source_prefix : Union[str, Path]
         S3 prefix where the objects are referenced.
 
     destination_bucket : str
         S3 destination bucket.
 
-    change_prefix : Tuple[str, str], optional
+    change_prefix : Tuple[Union[str, Path], Union[str, Path]], optional
         Text to be replaced in keys prefixes, by default is None.
         The first element is the text to be replaced, the second is the replacement text.
 
@@ -183,7 +185,10 @@ def copy_prefix(
     )
 
     destination_keys = source_keys if change_prefix is None else [
-        key.replace(change_prefix[0], change_prefix[1])
+        Path(key).as_posix().replace(
+            Path(change_prefix[0]).as_posix(),
+            Path(change_prefix[1]).as_posix()
+        )
         for key in source_keys
     ]
 

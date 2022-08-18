@@ -1,4 +1,6 @@
 """Unit tests for check.py"""
+from pathlib import Path
+
 import pytest
 from botocore.exceptions import ClientError
 
@@ -17,14 +19,15 @@ class TestCheck:
         with pytest.raises(ClientError):
             object_exists(BUCKET_NAME, "prefix/key.csv")
 
-    def test_check_nonexisting_object(self, s3_client):
+    @pytest.mark.parametrize("key", ["prefix/key.csv", Path("prefix/key.csv/")])
+    def test_check_nonexisting_object(self, s3_client, key):
         with create_bucket(s3_client, BUCKET_NAME):
-            response = object_exists(BUCKET_NAME, "prefix/key.csv")
+            response = object_exists(BUCKET_NAME, key)
 
         assert response is False
 
-    def test_check_existing_object(self, s3_client):
-        key = "prefix/key.csv"
+    @pytest.mark.parametrize("key", ["prefix/key.csv", Path("prefix/key.csv/")])
+    def test_check_existing_object(self, s3_client, key):
         with create_bucket(s3_client, BUCKET_NAME, keys_paths=[(key, FILENAME)]):
             response = object_exists(BUCKET_NAME, key)
 

@@ -6,7 +6,8 @@ from typing import (
     Dict,
     List,
     Optional,
-    Tuple
+    Tuple,
+    Union,
 )
 
 import boto3
@@ -14,17 +15,17 @@ import boto3
 from s3_tools.objects.list import list_objects
 from s3_tools.utils import (
     _create_progress_bar,
-    _get_future_output
+    _get_future_output,
 )
 
 
 def download_key_to_file(
     bucket: str,
-    key: str,
-    local_filename: str,
+    key: Union[str, Path],
+    local_filename: Union[str, Path],
     progress=None,  # type: ignore # No import if extra not installed
     task_id: int = -1,
-    aws_auth: Dict[str, str] = {}
+    aws_auth: Dict[str, str] = {},
 ) -> bool:
     """Retrieve one object from AWS S3 bucket and store into local disk.
 
@@ -33,10 +34,10 @@ def download_key_to_file(
     bucket: str
         AWS S3 bucket where the object is stored.
 
-    key: str
+    key: Union[str, Path]
         Key where the object is stored.
 
-    local_filename: str
+    local_filename: Union[str, Path]
         Local file where the data will be downloaded to.
 
     progress: rich.Progress
@@ -58,7 +59,7 @@ def download_key_to_file(
     >>> download_key_to_file(
     ...     bucket="myBucket",
     ...     key="myData/myFile.data",
-    ...     local_filename="theFile.data"
+    ...     local_filename="theFile.data",
     ... )
     True
 
@@ -66,7 +67,7 @@ def download_key_to_file(
     session = boto3.session.Session(**aws_auth)
     s3 = session.client("s3")
     Path(local_filename).parent.mkdir(parents=True, exist_ok=True)
-    s3.download_file(Bucket=bucket, Key=key, Filename=local_filename)
+    s3.download_file(Bucket=bucket, Key=Path(key).as_posix(), Filename=Path(local_filename).as_posix())
     if progress:
         progress.update(task_id, advance=1)
     return Path(local_filename).exists()
@@ -74,11 +75,12 @@ def download_key_to_file(
 
 def download_keys_to_files(
     bucket: str,
-    keys_paths: List[Tuple[str, str]],
+    keys_paths: List[Tuple[Union[str, Path], Union[str, Path]]],
     threads: int = 5,
     show_progress: bool = False,
-    aws_auth: Dict[str, str] = {}
-) -> List[Tuple[str, str, Any]]:
+    aws_auth: Dict[str, str] = {},
+    as_paths: bool = False,
+) -> List[Tuple[Union[str, Path], Union[str, Path], Any]]:
     """Download list of objects to specific paths.
 
     Parameters
@@ -86,9 +88,14 @@ def download_keys_to_files(
     bucket: str
         AWS S3 bucket where the objects are stored.
 
-    keys_paths: List[Tuple[str, str]]
+    keys_paths: List[Tuple[Union[str, Path], Union[str, Path]]]
         List with a tuple of S3 key to be downloaded and local path to be stored.
-        e.g. [("S3_Key", "Local_Path"), ("S3_Key", "Local_Path")]
+        e.g. [
+            ("S3_Key", "Local_Path"),
+            (Path("S3_Key"), "Local_Path"),
+            ("S3_Key", Path("Local_Path")),
+            (Path("S3_Key"), Path("Local_Path")),
+        ]
 
     threads: int
         Number of parallel downloads, by default 5.
@@ -100,9 +107,12 @@ def download_keys_to_files(
     aws_auth: Dict[str, str]
         Contains AWS credentials, by default is empty.
 
+    as_paths: bool
+        If True, the keys are returned as Path objects, otherwise as strings, by default is False.
+
     Returns
     -------
-    list of tuples
+    List[Tuple]
         A list with tuples formed by the "S3_Key", "Local_Path", and the result of the download.
         If successful will have True, if not will contain the error message.
         Attention, the output list may not follow the same input order.
@@ -114,13 +124,13 @@ def download_keys_to_files(
     ...     keys_paths=[
     ...         ("myData/myFile.data", "MyFiles/myFile.data"),
     ...         ("myData/myMusic/awesome.mp3", "MyFiles/myMusic/awesome.mp3"),
-    ...         ("myData/myDocs/paper.doc", "MyFiles/myDocs/paper.doc")
+    ...         ("myData/myDocs/paper.doc", "MyFiles/myDocs/paper.doc"),
     ...     ]
     ... )
     [
         ("myData/myMusic/awesome.mp3", "MyFiles/myMusic/awesome.mp3", True),
         ("myData/myDocs/paper.doc", "MyFiles/myDocs/paper.doc", True),
-        ("myData/myFile.data", "MyFiles/myFile.data", True)
+        ("myData/myFile.data", "MyFiles/myFile.data", True),
     ]
 
     """
@@ -155,19 +165,25 @@ def download_keys_to_files(
     if show_progress:
         progress.stop()
 
+    if as_paths:
+        output = [(Path(key), Path(fn), result) for key, fn, result in output]
+    else:
+        output = [(Path(key).as_posix(), Path(fn).as_posix(), result) for key, fn, result in output]
+
     return output
 
 
 def download_prefix_to_folder(
     bucket: str,
-    prefix: str,
-    folder: str,
+    prefix: Union[str, Path],
+    folder: Union[str, Path],
     search_str: Optional[str] = None,
     remove_prefix: bool = True,
     threads: int = 5,
     show_progress: bool = False,
-    aws_auth: Dict[str, str] = {}
-) -> List[Tuple[str, str, Any]]:
+    aws_auth: Dict[str, str] = {},
+    as_paths: bool = False,
+) -> List[Tuple[Union[str, Path], Union[str, Path], Any]]:
     """Download objects to local folder.
 
     Function to retrieve all files under a prefix on S3 and store them into local folder.
@@ -177,10 +193,10 @@ def download_prefix_to_folder(
     bucket: str
         AWS S3 bucket where the objects are stored.
 
-    prefix: str
+    prefix: Union[str, Path]
         Prefix where the objects are under.
 
-    folder: str
+    folder: Union[str, Path]
         Local folder path where files will be stored.
 
     search_str: str
@@ -201,9 +217,12 @@ def download_prefix_to_folder(
     aws_auth: Dict[str, str]
         Contains AWS credentials, by default is empty.
 
+    as_paths: bool
+        If True, the keys are returned as Path objects, otherwise as strings, by default is False.
+
     Returns
     -------
-    List[Tuples]
+    List[Tuple]
         A list with tuples formed by the "S3_Key", "Local_Path", and the result of the download.
         If successful will have True, if not will contain the error message.
 
@@ -212,20 +231,29 @@ def download_prefix_to_folder(
     >>> download_prefix_to_folder(
     ...     bucket="myBucket",
     ...     prefix="myData",
-    ...     folder="myFiles"
+    ...     folder="myFiles",
     ... )
     [
         ("myData/myFile.data", "MyFiles/myFile.data", True),
         ("myData/myMusic/awesome.mp3", "MyFiles/myMusic/awesome.mp3", True),
-        ("myData/myDocs/paper.doc", "MyFiles/myDocs/paper.doc", True)
+        ("myData/myDocs/paper.doc", "MyFiles/myDocs/paper.doc", True),
     ]
 
     """
-    s3_keys = list_objects(bucket=bucket, prefix=prefix, search_str=search_str, aws_auth=aws_auth)
+    s3_keys = list_objects(
+        bucket=bucket,
+        prefix=prefix,
+        search_str=search_str,
+        aws_auth=aws_auth,
+        as_paths=as_paths,
+    )
 
-    keys_paths = [(
+    keys_paths: List[Tuple[Union[str, Path], Union[str, Path]]] = [(
         key,
-        "{}/{}".format(folder, key.replace(prefix, "")[1:] if remove_prefix else key)
+        "{}/{}".format(
+            Path(folder).as_posix(),
+            Path(key).as_posix().replace(Path(prefix).as_posix(), "")[1:] if remove_prefix else key
+        )
     ) for key in s3_keys]
 
-    return download_keys_to_files(bucket, keys_paths, threads, show_progress, aws_auth)
+    return download_keys_to_files(bucket, keys_paths, threads, show_progress, aws_auth, as_paths)

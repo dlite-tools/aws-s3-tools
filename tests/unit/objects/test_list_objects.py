@@ -1,5 +1,8 @@
 """Unit tests for list.py"""
+from pathlib import Path
+
 from botocore.exceptions import ClientError
+import pytest
 
 from s3_tools import list_objects
 
@@ -20,9 +23,10 @@ class TestList:
 
         assert error == "NoSuchBucket"
 
-    def test_list_empty_bucket(self, s3_client):
+    @pytest.mark.parametrize("prefix", ["prefix", Path("prefix")])
+    def test_list_empty_bucket(self, s3_client, prefix):
         with create_bucket(s3_client, BUCKET_NAME):
-            keys = list_objects(BUCKET_NAME, "prefix")
+            keys = list_objects(BUCKET_NAME, prefix)
 
         assert len(keys) == 0
 
@@ -42,3 +46,13 @@ class TestList:
             keys = list_objects(BUCKET_NAME, "prefix", max_keys=3)
 
         assert len(keys) == 10
+
+    @pytest.mark.parametrize("prefix", ["prefix", Path("prefix")])
+    def test_list_bucket_return_as_path(self, s3_client, prefix):
+        lst = [(f"prefix/mock_{i}.csv", FILENAME) for i in range(1)]
+
+        with create_bucket(s3_client, BUCKET_NAME, keys_paths=lst):
+            keys = list_objects(BUCKET_NAME, prefix, as_paths=True)
+
+        assert len(keys) == 1
+        assert keys[0] == Path(lst[0][0])

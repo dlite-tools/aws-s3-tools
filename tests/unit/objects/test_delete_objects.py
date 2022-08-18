@@ -1,4 +1,7 @@
 """Unit tests for delete.py"""
+from pathlib import Path
+
+import pytest
 from botocore.exceptions import ClientError
 
 from s3_tools import (
@@ -17,6 +20,10 @@ from tests.unit.conftest import (
 
 class TestDelete:
 
+    files = [(f"prefix/mock_{i}.csv", FILENAME) for i in range(4)]
+    keys = [key for key, fn in files]
+    keys_path = [Path(key) for key in keys]
+
     def test_delete_nonexisting_bucket(self, s3_client):
         try:
             delete_object(BUCKET_NAME, "prefix/object")
@@ -25,8 +32,8 @@ class TestDelete:
 
         assert error == "NoSuchBucket"
 
-    def test_delete_nonexisting_object(self, s3_client):
-        key = "prefix/object"
+    @pytest.mark.parametrize("key", ["prefix/object", Path("prefix/object")])
+    def test_delete_nonexisting_object(self, s3_client, key):
         with create_bucket(s3_client, BUCKET_NAME):
             before = object_exists(BUCKET_NAME, key)
             delete_object(BUCKET_NAME, key)
@@ -35,8 +42,8 @@ class TestDelete:
         assert before is False
         assert after is False
 
-    def test_delete_existing_object(self, s3_client):
-        key = "prefix/object"
+    @pytest.mark.parametrize("key", ["prefix/object", Path("prefix/object")])
+    def test_delete_existing_object(self, s3_client, key):
         with create_bucket(s3_client, BUCKET_NAME, keys_paths=[(key, FILENAME)]):
             before = object_exists(BUCKET_NAME, key)
             delete_object(BUCKET_NAME, key)
@@ -45,11 +52,9 @@ class TestDelete:
         assert before is True
         assert after is False
 
-    def test_delete_keys(self, s3_client):
-        lst = [(f"prefix/mock_{i}.csv", FILENAME) for i in range(4)]
-        keys = [key for key, fn in lst]
-
-        with create_bucket(s3_client, BUCKET_NAME, keys_paths=lst):
+    @pytest.mark.parametrize("keys", [keys, keys_path])
+    def test_delete_keys(self, s3_client, keys):
+        with create_bucket(s3_client, BUCKET_NAME, keys_paths=self.files):
             before = [object_exists(BUCKET_NAME, key) for key in keys]
             delete_keys(BUCKET_NAME, keys, False)
             after = [object_exists(BUCKET_NAME, key) for key in keys]
@@ -57,11 +62,9 @@ class TestDelete:
         assert all(before) is True
         assert all(after) is False
 
-    def test_delete_prefix(self, s3_client):
-        lst = [(f"prefix/mock_{i}.csv", FILENAME) for i in range(4)]
-        keys = [key for key, fn in lst]
-
-        with create_bucket(s3_client, BUCKET_NAME, keys_paths=lst):
+    @pytest.mark.parametrize("keys", [keys, keys_path])
+    def test_delete_prefix(self, s3_client, keys):
+        with create_bucket(s3_client, BUCKET_NAME, keys_paths=self.files):
             before = [object_exists(BUCKET_NAME, key) for key in keys]
             delete_prefix(BUCKET_NAME, "prefix", False)
             after = [object_exists(BUCKET_NAME, key) for key in keys]
@@ -69,11 +72,9 @@ class TestDelete:
         assert all(before) is True
         assert all(after) is False
 
-    def test_delete_prefix_dry_run(self, s3_client):
-        lst = [(f"prefix/mock_{i}.csv", FILENAME) for i in range(4)]
-        keys = [key for key, fn in lst]
-
-        with create_bucket(s3_client, BUCKET_NAME, keys_paths=lst):
+    @pytest.mark.parametrize("keys", [keys, keys_path])
+    def test_delete_prefix_dry_run(self, s3_client, keys):
+        with create_bucket(s3_client, BUCKET_NAME, keys_paths=self.files):
             before = [object_exists(BUCKET_NAME, key) for key in keys]
             delete_prefix(BUCKET_NAME, "prefix", True)
             after = [object_exists(BUCKET_NAME, key) for key in keys]
@@ -81,11 +82,9 @@ class TestDelete:
         assert all(before) is True
         assert all(after) is True
 
-    def test_delete_keys_dry_run(self, s3_client):
-        lst = [(f"prefix/mock_{i}.csv", FILENAME) for i in range(4)]
-        keys = [key for key, fn in lst]
-
-        with create_bucket(s3_client, BUCKET_NAME, keys_paths=lst):
+    @pytest.mark.parametrize("keys", [keys, keys_path])
+    def test_delete_keys_dry_run(self, s3_client, keys):
+        with create_bucket(s3_client, BUCKET_NAME, keys_paths=self.files):
             before = [object_exists(BUCKET_NAME, key) for key in keys]
             delete_keys(BUCKET_NAME, keys, True)
             after = [object_exists(BUCKET_NAME, key) for key in keys]

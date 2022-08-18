@@ -1,8 +1,10 @@
 """List S3 bucket objects."""
+from pathlib import Path
 from typing import (
     Dict,
     Optional,
-    List
+    List,
+    Union,
 )
 
 import fnmatch
@@ -12,11 +14,12 @@ import boto3
 
 def list_objects(
     bucket: str,
-    prefix: str = "",
+    prefix: Union[str, Path] = "",
     search_str: Optional[str] = None,
     max_keys: int = 1000,
-    aws_auth: Dict[str, str] = {}
-) -> List[str]:
+    aws_auth: Dict[str, str] = {},
+    as_paths: bool = False,
+) -> List[Union[str, Path]]:
     """Retrieve the list of objects from AWS S3 bucket under a given prefix and search string.
 
     Parameters
@@ -24,7 +27,7 @@ def list_objects(
     bucket: str
         AWS S3 bucket where the objects are stored.
 
-    prefix: str
+    prefix: Union[str, Path]
         Prefix where the objects are under.
 
     search_str: str
@@ -37,9 +40,12 @@ def list_objects(
     aws_auth: Dict[str, str]
         Contains AWS credentials, by default is empty.
 
+    as_paths: bool
+        If True, the keys are returned as Path objects, otherwise as strings, by default is False.
+
     Returns
     -------
-    List[str]
+    List[Union[str, Path]]
         List of keys inside the bucket, under the path, and filtered.
 
     Examples
@@ -51,14 +57,14 @@ def list_objects(
         "myData/myDocs/paper.doc"
     ]
 
-    >>> list_objects(bucket="myBucket", prefix="myData", search_str="*paper*")
+    >>> list_objects(bucket="myBucket", prefix="myData", search_str="*paper*", as_paths=True)
     [
-        "myData/myDocs/paper.doc"
+        Path("myData/myDocs/paper.doc")
     ]
 
     """
     continuation_token: Optional[str] = None
-    keys: List[str] = []
+    keys = []
 
     session = boto3.session.Session(**aws_auth)
     s3 = session.client("s3")
@@ -66,7 +72,7 @@ def list_objects(
     while True:
         list_kwargs = {
             "Bucket": bucket,
-            "Prefix": prefix,
+            "Prefix": Path(prefix).as_posix(),
             "MaxKeys": max_keys
         }
         if continuation_token:
@@ -81,4 +87,7 @@ def list_objects(
 
         continuation_token = response.get("NextContinuationToken")
 
-    return keys if not search_str else fnmatch.filter(keys, search_str)
+    if isinstance(search_str, str):
+        keys = fnmatch.filter(keys, search_str)
+
+    return keys if not as_paths else [Path(key) for key in keys]
