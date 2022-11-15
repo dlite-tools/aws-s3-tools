@@ -54,7 +54,7 @@ def upload_file_to_key(
 
     Examples
     --------
-    >>> write_object_from_file(
+    >>> upload_file_to_key(
     ...     bucket="myBucket",
     ...     key="myFiles/music.mp3",
     ...     local_filename="files/music.mp3",
