@@ -26,6 +26,7 @@ def download_key_to_file(
     progress=None,  # type: ignore # No import if extra not installed
     task_id: int = -1,
     aws_auth: Dict[str, str] = {},
+    extra_args: Dict[str, str] = {},
 ) -> bool:
     """Retrieve one object from AWS S3 bucket and store into local disk.
 
@@ -49,6 +50,11 @@ def download_key_to_file(
     aws_auth: Dict[str, str]
         Contains AWS credentials, by default is empty.
 
+    extra_args: Dict[str, str]
+        Extra arguments to be passed to the boto3 download_file method, by default is empty.
+        Allowed download arguments:
+        https://boto3.amazonaws.com/v1/documentation/api/latest/reference/customizations/s3.html#boto3.s3.transfer.S3Transfer.ALLOWED_DOWNLOAD_ARGS
+
     Returns
     -------
     bool
@@ -67,7 +73,12 @@ def download_key_to_file(
     session = boto3.session.Session(**aws_auth)
     s3 = session.client("s3")
     Path(local_filename).parent.mkdir(parents=True, exist_ok=True)
-    s3.download_file(Bucket=bucket, Key=Path(key).as_posix(), Filename=Path(local_filename).as_posix())
+    s3.download_file(
+        Bucket=bucket,
+        Key=Path(key).as_posix(),
+        Filename=Path(local_filename).as_posix(),
+        ExtraArgs=extra_args,
+    )
     if progress:
         progress.update(task_id, advance=1)
     return Path(local_filename).exists()
@@ -80,6 +91,8 @@ def download_keys_to_files(
     show_progress: bool = False,
     aws_auth: Dict[str, str] = {},
     as_paths: bool = False,
+    default_extra_args: Dict[str, str] = {},
+    extra_args_per_key: List[Dict[str, str]] = [],
 ) -> List[Tuple[Union[str, Path], Union[str, Path], Any]]:
     """Download list of objects to specific paths.
 
@@ -110,6 +123,14 @@ def download_keys_to_files(
     as_paths: bool
         If True, the keys are returned as Path objects, otherwise as strings, by default is False.
 
+    default_extra_args: Dict[str, str]
+        Extra arguments to be passed to the boto3 download_file method, by default is empty.
+        The extra arguments will be applied to all S3 keys.
+
+    extra_args_per_key: List[Dict[str, str]]
+        Extra arguments to be passed for each S3 key to the boto3 download_file method, by default is empty.
+        The default extra arguments will be merged with the extra arguments passed for each key.
+
     Returns
     -------
     List[Tuple]
@@ -134,6 +155,11 @@ def download_keys_to_files(
     ]
 
     """
+    if len(extra_args_per_key) != 0 and len(extra_args_per_key) != len(keys_paths):
+        raise ValueError("The length of extra_args_per_key must be the same as keys_paths.")
+
+    extra_arguments = [{}] * len(keys_paths) if len(extra_args_per_key) == 0 else extra_args_per_key
+
     if show_progress:
         progress, task_id = _create_progress_bar("Downloading", len(keys_paths))
         progress.start()
@@ -152,9 +178,10 @@ def download_keys_to_files(
                 filename,
                 progress,
                 task_id,
-                aws_auth
+                aws_auth,
+                {**default_extra_args, **extra_args},
             ): {"s3": s3_key, "fn": filename}
-            for s3_key, filename in keys_paths
+            for (s3_key, filename), extra_args in zip(keys_paths, extra_arguments)
         }
 
         output = [
@@ -183,6 +210,7 @@ def download_prefix_to_folder(
     show_progress: bool = False,
     aws_auth: Dict[str, str] = {},
     as_paths: bool = False,
+    default_extra_args: Dict[str, str] = {},
 ) -> List[Tuple[Union[str, Path], Union[str, Path], Any]]:
     """Download objects to local folder.
 
@@ -220,6 +248,10 @@ def download_prefix_to_folder(
     as_paths: bool
         If True, the keys are returned as Path objects, otherwise as strings, by default is False.
 
+    default_extra_args: Dict[str, str]
+        Extra arguments to be passed to the boto3 download_file method, by default is empty.
+        The extra arguments will be applied to all S3 keys.
+
     Returns
     -------
     List[Tuple]
@@ -256,4 +288,4 @@ def download_prefix_to_folder(
         )
     ) for key in s3_keys]
 
-    return download_keys_to_files(bucket, keys_paths, threads, show_progress, aws_auth, as_paths)
+    return download_keys_to_files(bucket, keys_paths, threads, show_progress, aws_auth, as_paths, default_extra_args)

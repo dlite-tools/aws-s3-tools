@@ -161,3 +161,8 @@ class TestDownload:
 
         assert test_1_Root and test_2_Root and test_1_FolderA and test_1_FolderD
         assert len(response) == 4
+
+    def test_download_not_enough_arguments(self):
+
+        with pytest.raises(ValueError):
+            download_keys_to_files(BUCKET_NAME, self.download, extra_args_per_key=[{'arg': 'value'}])
