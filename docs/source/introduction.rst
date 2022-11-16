@@ -5,6 +5,7 @@ AWS S3 Tools is a Python package to make it easier to interact with S3 objects, 
 
 - List S3 bucket content
 - Check if an S3 object exists
+- Retrieve an S3 object metadata
 - Download/upload S3 objects to/from local files
 - Read/write S3 objects into/from Python variables
 - Delete/Move S3 objects
