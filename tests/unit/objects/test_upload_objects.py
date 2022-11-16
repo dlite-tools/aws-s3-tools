@@ -10,6 +10,7 @@ from s3_tools import (
     upload_files_to_keys,
     upload_folder_to_prefix,
     object_exists,
+    object_metadata,
 )
 
 from tests.unit.conftest import (
@@ -88,3 +89,32 @@ class TestUpload:
         assert len(response) == 4
         # The response must content all paths
         assert not set(paths) ^ set(r[0] for r in response)
+
+    def test_upload_not_enough_arguments(self):
+
+        with pytest.raises(ValueError):
+            upload_files_to_keys(BUCKET_NAME, self.keys_paths, extra_args_per_key=[{'arg': 'value'}])
+
+    @pytest.mark.parametrize("key", [key, Path(key)])
+    def test_update_with_arguments(self, s3_client, key):
+        with create_bucket(s3_client, BUCKET_NAME):
+            before = object_exists(BUCKET_NAME, key)
+            upload_file_to_key(
+                BUCKET_NAME,
+                key,
+                FILENAME,
+                extra_args={
+                    'Metadata': {'key': 'valueA'},
+                    'ContentType': 'text/csv',
+                    'Tagging': 'tagA=valueA&tagB=valueB',
+                }
+            )
+            after = object_exists(BUCKET_NAME, key)
+            metadata = object_metadata(BUCKET_NAME, key)
+
+        assert before is False
+        assert after is True
+
+        assert metadata['Metadata']['key'] == 'valueA'
+        assert metadata['ContentType'] == 'text/csv'
+        assert metadata['ResponseMetadata']['HTTPHeaders']['x-amz-tagging-count'] == 2
