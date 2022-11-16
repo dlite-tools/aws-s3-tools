@@ -117,4 +117,4 @@ class TestUpload:
 
         assert metadata['Metadata']['key'] == 'valueA'
         assert metadata['ContentType'] == 'text/csv'
-        assert metadata['ResponseMetadata']['HTTPHeaders']['x-amz-tagging-count'] == 2
+        assert metadata['ResponseMetadata']['HTTPHeaders']['x-amz-tagging-count'] == '2'
