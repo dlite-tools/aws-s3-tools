@@ -17,6 +17,7 @@ from s3_tools.buckets.list import (
 
 from s3_tools.objects.check import (
     object_exists,
+    object_metadata,
 )
 
 from s3_tools.objects.copy import (

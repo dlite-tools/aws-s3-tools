@@ -24,6 +24,7 @@ def upload_file_to_key(
     progress=None,  # type: ignore # No import if extra not installed
     task_id: int = -1,
     aws_auth: Dict[str, str] = {},
+    extra_args: Dict[str, str] = {},
 ) -> str:
     """Upload one file from local disk and store into AWS S3 bucket.
 
@@ -47,6 +48,11 @@ def upload_file_to_key(
     aws_auth: Dict[str, str]
         Contains AWS credentials, by default is empty.
 
+    extra_args: Dict[str, str]
+        Extra arguments to be passed to the boto3 upload_file method, by default is empty.
+        Allowed upload arguments:
+        https://boto3.amazonaws.com/v1/documentation/api/latest/reference/customizations/s3.html#boto3.s3.transfer.S3Transfer.ALLOWED_UPLOAD_ARGS
+
     Returns
     -------
     str
@@ -54,7 +60,7 @@ def upload_file_to_key(
 
     Examples
     --------
-    >>> write_object_from_file(
+    >>> upload_file_to_key(
     ...     bucket="myBucket",
     ...     key="myFiles/music.mp3",
     ...     local_filename="files/music.mp3",
@@ -64,7 +70,12 @@ def upload_file_to_key(
     """
     session = boto3.session.Session(**aws_auth)
     s3 = session.client("s3")
-    s3.upload_file(Bucket=bucket, Key=Path(key).as_posix(), Filename=Path(local_filename).as_posix())
+    s3.upload_file(
+        Bucket=bucket,
+        Key=Path(key).as_posix(),
+        Filename=Path(local_filename).as_posix(),
+        ExtraArgs=extra_args,
+    )
     if progress:
         progress.update(task_id, advance=1)
     return "{}/{}/{}".format(s3.meta.endpoint_url, bucket, key)
@@ -77,6 +88,8 @@ def upload_files_to_keys(
     show_progress: bool = False,
     aws_auth: Dict[str, str] = {},
     as_paths: bool = False,
+    default_extra_args: Dict[str, str] = {},
+    extra_args_per_key: List[Dict[str, str]] = [],
 ) -> List[Tuple[Union[str, Path], Union[str, Path], Any]]:
     """Upload list of files to specific objects.
 
@@ -102,12 +115,25 @@ def upload_files_to_keys(
     as_paths: bool
         If True, the keys are returned as Path objects, otherwise as strings, by default is False.
 
+    default_extra_args: Dict[str, str]
+        Extra arguments to be passed to the boto3 upload_file method, by default is empty.
+        The extra arguments will be applied to all S3 keys.
+
+    extra_args_per_key: List[Dict[str, str]]
+        Extra arguments to be passed for each S3 key to the boto3 upload_file method, by default is empty.
+        The default extra arguments will be merged with the extra arguments passed for each key.
+
     Returns
     -------
     List[Tuple[Union[str, Path], Union[str, Path], Any]]
         A list with tuples formed by the "Local_Path", "S3_Key", and the result of the upload.
         If successful will have True, if not will contain the error message.
         Attention, the output list may not follow the same input order.
+
+    Raises
+    ------
+    ValueError
+        extra_args_per_key when used must have the same length of paths_keys.
 
     Examples
     --------
@@ -126,6 +152,11 @@ def upload_files_to_keys(
     ]
 
     """
+    if len(extra_args_per_key) != 0 and len(extra_args_per_key) != len(paths_keys):
+        raise ValueError("The length of extra_args_per_key must be the same as paths_keys.")
+
+    extra_arguments = [{}] * len(paths_keys) if len(extra_args_per_key) == 0 else extra_args_per_key
+
     if show_progress:
         progress, task_id = _create_progress_bar("Uploading", len(paths_keys))
         progress.start()
@@ -145,8 +176,9 @@ def upload_files_to_keys(
                 progress,
                 task_id,
                 aws_auth,
+                {**default_extra_args, **extra_args},
             ): {"s3": s3_key, "fn": filename}
-            for filename, s3_key in paths_keys
+            for (filename, s3_key), extra_args in zip(paths_keys, extra_arguments)
         }
 
         output = [
@@ -172,6 +204,7 @@ def upload_folder_to_prefix(
     show_progress: bool = False,
     aws_auth: Dict[str, str] = {},
     as_paths: bool = False,
+    default_extra_args: Dict[str, str] = {},
 ) -> List[Tuple[Union[str, Path], Union[str, Path], Any]]:
     """Upload local folder to a S3 prefix.
 
@@ -208,6 +241,10 @@ def upload_folder_to_prefix(
     as_paths: bool
         If True, the keys are returned as Path objects, otherwise as strings, by default is False.
 
+    default_extra_args: Dict[str, str]
+        Extra arguments to be passed to the boto3 upload_file method, by default is empty.
+        The extra arguments will be applied to all S3 keys.
+
     Returns
     -------
     List[Tuple[Union[str, Path], Union[str, Path], Any]]
@@ -238,4 +275,4 @@ def upload_folder_to_prefix(
         for p in paths
     ]
 
-    return upload_files_to_keys(bucket, paths_keys, threads, show_progress, aws_auth, as_paths)
+    return upload_files_to_keys(bucket, paths_keys, threads, show_progress, aws_auth, as_paths, default_extra_args)
