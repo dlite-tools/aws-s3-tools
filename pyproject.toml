@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aws-s3-tools"
-version = "0.2.3"
+version = "0.3.0"
 description = "AWS S3 tools package"
 authors = ["Daniel Ferrari"]
 maintainers = ["Daniel Ferrari, Carlos Alves, Tomás Osório"]
@@ -27,33 +27,34 @@ classifiers = [
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Utilities"
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-
-boto3 = "^1"
+python = "^3.8"
+boto3 = "^1.25"
 ujson = "^5"
-rich = {version = "^11", optional = true}
-types-ujson = "^4"
+rich = {version = "^13", optional = true}
 
 [tool.poetry.extras]
 progress = ["rich"]
 
-[tool.poetry.dev-dependencies]
-flake8 = "^4"
-moto = "^3"
-mypy = "^0"
-pydocstyle = "^6"
-pytest = "^6"
-pytest-cov = "^3"
-toml = "^0"
-sphinx-rtd-theme = "^0"
-sphinx = "^3"
-requests = "^2"
-types-requests = "^2"
+[tool.poetry.group.dev.dependencies]
+flake8 = "*"
+moto = "*"
+mypy = "*"
+pydocstyle = "*"
+pytest = "*"
+pytest-cov = "*"
+toml = "*"
+sphinx-rtd-theme = "*"
+sphinx = "*"
+requests = "*"
+types-requests = "*"
+types-ujson = "*"
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]
