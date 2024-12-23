@@ -1,7 +1,6 @@
 """Unit tests for create bucket."""
 import pytest
 from botocore.exceptions import ParamValidationError
-
 from s3_tools import create_bucket
 from tests.unit.conftest import BUCKET_NAME
 

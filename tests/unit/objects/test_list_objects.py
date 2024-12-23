@@ -1,16 +1,10 @@
-"""Unit tests for list.py"""
+"""Unit tests for list module."""
 from pathlib import Path
 
-from botocore.exceptions import ClientError
 import pytest
-
+from botocore.exceptions import ClientError
 from s3_tools import list_objects
-
-from tests.unit.conftest import (
-    create_bucket,
-    BUCKET_NAME,
-    FILENAME
-)
+from tests.unit.conftest import BUCKET_NAME, FILENAME, create_bucket
 
 
 class TestList:

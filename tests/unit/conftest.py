@@ -1,14 +1,13 @@
+import os
 from contextlib import contextmanager
 from pathlib import Path
 from typing import (
     List,
     Union,
 )
-import os
 
 import boto3
 import pytest
-
 from moto import mock_s3
 
 BUCKET_NAME = "mock"

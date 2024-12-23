@@ -1,17 +1,15 @@
-"""Unit tests for presigned_url.py"""
+"""Unit tests for presigned_url module."""
 from pathlib import Path
 
-from botocore.exceptions import ParamValidationError
 import pytest
 import requests
-
+from botocore.exceptions import ParamValidationError
 from s3_tools import (
     get_presigned_download_url,
     get_presigned_upload_url,
     get_presigned_url,
     object_exists,
 )
-
 from tests.unit.conftest import (
     BUCKET_NAME,
     FILENAME,

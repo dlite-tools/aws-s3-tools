@@ -1,22 +1,16 @@
-"""Unit tests for copy.py"""
+"""Unit tests for copy module."""
 from pathlib import Path
 
 import pytest
 from botocore.exceptions import ClientError
-
 from s3_tools import (
     copy_keys,
     copy_object,
     copy_prefix,
-    object_exists,
     list_objects,
+    object_exists,
 )
-
-from tests.unit.conftest import (
-    create_bucket,
-    BUCKET_NAME,
-    FILENAME
-)
+from tests.unit.conftest import BUCKET_NAME, FILENAME, create_bucket
 
 
 class TestCopy:

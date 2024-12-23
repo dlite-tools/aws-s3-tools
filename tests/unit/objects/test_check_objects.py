@@ -1,19 +1,13 @@
-"""Unit tests for check.py"""
+"""Unit tests for check module."""
 from pathlib import Path
 
 import pytest
 from botocore.exceptions import ClientError
-
 from s3_tools import (
     object_exists,
     object_metadata,
 )
-
-from tests.unit.conftest import (
-    create_bucket,
-    BUCKET_NAME,
-    FILENAME
-)
+from tests.unit.conftest import BUCKET_NAME, FILENAME, create_bucket
 
 
 class TestCheck:

@@ -1,18 +1,16 @@
-"""Unit tests for upload.py"""
-from pathlib import Path
+"""Unit tests for upload module."""
 import shutil
+from pathlib import Path
 
 import pytest
 from boto3.exceptions import S3UploadFailedError
-
 from s3_tools import (
+    object_exists,
+    object_metadata,
     upload_file_to_key,
     upload_files_to_keys,
     upload_folder_to_prefix,
-    object_exists,
-    object_metadata,
 )
-
 from tests.unit.conftest import (
     BUCKET_NAME,
     EMPTY_FILE,
@@ -93,7 +91,7 @@ class TestUpload:
     def test_upload_not_enough_arguments(self):
 
         with pytest.raises(ValueError):
-            upload_files_to_keys(BUCKET_NAME, self.keys_paths, extra_args_per_key=[{'arg': 'value'}])
+            upload_files_to_keys(BUCKET_NAME, self.keys_paths, extra_args_per_key=[{'arg': 'value'}])  # type: ignore
 
     @pytest.mark.parametrize("key", [key, Path(key)])
     def test_update_with_arguments(self, s3_client, key):

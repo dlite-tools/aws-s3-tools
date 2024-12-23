@@ -24,7 +24,7 @@ def upload_file_to_key(
     progress=None,  # type: ignore # No import if extra not installed
     task_id: int = -1,
     aws_auth: Dict[str, str] = {},
-    extra_args: Dict[str, str] = {},
+    extra_args: Dict[str, Any] = {},
 ) -> str:
     """Upload one file from local disk and store into AWS S3 bucket.
 
@@ -48,7 +48,7 @@ def upload_file_to_key(
     aws_auth: Dict[str, str]
         Contains AWS credentials, by default is empty.
 
-    extra_args: Dict[str, str]
+    extra_args: Dict[str, Any]
         Extra arguments to be passed to the boto3 upload_file method, by default is empty.
         Allowed upload arguments:
         https://boto3.amazonaws.com/v1/documentation/api/latest/reference/customizations/s3.html#boto3.s3.transfer.S3Transfer.ALLOWED_UPLOAD_ARGS

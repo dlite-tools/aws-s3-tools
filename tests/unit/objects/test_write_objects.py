@@ -1,18 +1,8 @@
-"""Unit tests for write.py"""
+"""Unit tests for write module."""
 import pytest
 from botocore.exceptions import ClientError
-
-from s3_tools import (
-    write_object_from_bytes,
-    write_object_from_dict,
-    write_object_from_text,
-    object_exists
-)
-
-from tests.unit.conftest import (
-    BUCKET_NAME,
-    create_bucket
-)
+from s3_tools import object_exists, write_object_from_bytes, write_object_from_dict, write_object_from_text
+from tests.unit.conftest import BUCKET_NAME, create_bucket
 
 
 class TestWrite:
@@ -50,7 +40,7 @@ class TestWrite:
     def test_write_from_bytes_wrong_format(self, s3_client):
         with create_bucket(s3_client, BUCKET_NAME):
             with pytest.raises(TypeError):
-                write_object_from_bytes(BUCKET_NAME, self.key, 10)
+                write_object_from_bytes(BUCKET_NAME, self.key, 10)  # type: ignore
 
     def test_write_from_dict(self, s3_client):
         obj = {"key": "value"}
@@ -65,7 +55,7 @@ class TestWrite:
     def test_write_from_dict_wrong_format(self, s3_client):
         with create_bucket(s3_client, BUCKET_NAME):
             with pytest.raises(TypeError):
-                write_object_from_dict(BUCKET_NAME, self.key, 10)
+                write_object_from_dict(BUCKET_NAME, self.key, 10)  # type: ignore
 
     def test_write_from_text(self, s3_client):
         obj = "Just a test string"
@@ -80,4 +70,4 @@ class TestWrite:
     def test_write_from_text_wrong_format(self, s3_client):
         with create_bucket(s3_client, BUCKET_NAME):
             with pytest.raises(TypeError):
-                write_object_from_text(BUCKET_NAME, self.key, 10)
+                write_object_from_text(BUCKET_NAME, self.key, 10)  # type: ignore

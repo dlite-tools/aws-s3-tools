@@ -1,13 +1,8 @@
 """Unit tests for check bucket."""
 import pytest
 from botocore.exceptions import ParamValidationError
-
 from s3_tools import bucket_exists
-
-from tests.unit.conftest import (
-    create_bucket,
-    BUCKET_NAME
-)
+from tests.unit.conftest import BUCKET_NAME, create_bucket
 
 
 class TestCheck:
