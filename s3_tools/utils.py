@@ -1,6 +1,6 @@
 """General utilities."""
-from typing import Any
 from concurrent import futures
+from typing import Any
 
 
 def _get_future_output(future: futures.Future) -> Any:
@@ -40,11 +40,7 @@ def _create_progress_bar(description: str, length: int):
         (Need to install extra [progress] to be used)
     """
     try:
-        from rich.progress import (
-            BarColumn,
-            Progress,
-            TextColumn
-        )
+        from rich.progress import BarColumn, Progress, TextColumn
 
         progress = Progress(
             TextColumn("[bold blue]{task.description}", justify="right"),

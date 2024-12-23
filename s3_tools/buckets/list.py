@@ -1,11 +1,6 @@
 """List S3 Buckets."""
 import fnmatch
-from typing import (
-    Dict,
-    Optional,
-    List
-)
-
+from typing import Dict, List, Optional
 
 import boto3
 
