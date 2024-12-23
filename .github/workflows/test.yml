@@ -32,10 +32,9 @@ jobs:
       run: make coverage
 
     - name: Upload Coverage
-      uses: codecov/codecov-action@v5
+      uses: codecov/test-results-action@v1
       with:
         files: ./coverage.xml
-        fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
 
   python-checks:
