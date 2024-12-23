@@ -14,7 +14,7 @@ unit-tests:
 
 coverage:
 	###### Running coverage analysis ######
-	poetry run pytest --cov-report term-missing --cov-report xml --cov $(PACKAGE)
+	poetry run pytest --cov=$(PACKAGE) --cov-report=term-missing --cov-report=xml --junitxml=junit.xml
 
 build-docs:
 	###### Build documentation ######

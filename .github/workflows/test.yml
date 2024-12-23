@@ -31,10 +31,10 @@ jobs:
     - name: Run Coverage
       run: make coverage
 
-    - name: Upload Coverage
+    - name: Upload test results to Codecov
       uses: codecov/test-results-action@v1
       with:
-        files: ./coverage.xml
+        file: ./junit.xml
         token: ${{ secrets.CODECOV_TOKEN }}
 
   python-checks:
