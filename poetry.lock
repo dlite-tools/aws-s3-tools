@@ -1508,4 +1508,4 @@ progress = ["rich"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "a9d31a279a72339f831daa5f8ee5240126b0cca30a080148cda47e8d9e310fa5"
+content-hash = "cb9aafaf5ce485339321508cd15b7a9d64eaa47d5c6745ba9ad3692d56603e45"
