@@ -8,7 +8,7 @@ from typing import (
 
 import boto3
 import pytest
-from moto import mock_s3
+from moto import mock_aws
 
 BUCKET_NAME = "mock"
 FILENAME = "tests/resources/mock_file.csv"
@@ -26,7 +26,7 @@ def aws_credentials():
 
 @pytest.yield_fixture(scope="module")
 def s3_client(aws_credentials):
-    with mock_s3():
+    with mock_aws():
         session = boto3.session.Session()
         s3 = session.client("s3")
         yield s3

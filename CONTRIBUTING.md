@@ -29,7 +29,8 @@ Before submitting your changes for review, make sure to check that your changes
 do not break any tests by running:
 
 ```shell
-make all
+make static-tests
+make unit-tests
 ```
 
 Do not forget to create new tests to cover the code alterations.

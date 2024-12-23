@@ -24,18 +24,18 @@ classifiers = [
     "License :: Freely Distributable",
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Utilities"
 ]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-boto3 = "^1.25"
+boto3 = "^1.35"
 ujson = "^5"
 rich = {version = "^13", optional = true}
 
@@ -43,23 +43,23 @@ rich = {version = "^13", optional = true}
 progress = ["rich"]
 
 [tool.poetry.group.dev.dependencies]
-moto = "*"
+moto = {extras = ["s3"], version = "*"}
 mypy = "*"
 pytest = "*"
 pytest-cov = "*"
-toml = "*"
-sphinx-rtd-theme = "*"
-sphinx = "*"
 requests = "*"
+ruff = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
+toml = "*"
 types-requests = "*"
 types-ujson = "*"
-ruff = "^0.8.4"
 
 [tool.ruff]
 line-length = 120
 indent-width = 4
 target-version = "py311"
-src = ["s3_tools"]
+src = ["s3_tools", "tests/unit"]
 
 [tool.ruff.format]
 quote-style = "double"
