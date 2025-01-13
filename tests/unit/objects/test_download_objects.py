@@ -1,17 +1,15 @@
-"""Unit tests for download.py"""
+"""Unit tests for download module."""
 import shutil
 from filecmp import dircmp
 from pathlib import Path
 
 import pytest
 from botocore.exceptions import ClientError
-
 from s3_tools import (
     download_key_to_file,
     download_keys_to_files,
     download_prefix_to_folder,
 )
-
 from tests.unit.conftest import (
     BUCKET_NAME,
     EMPTY_FILE,
@@ -120,7 +118,7 @@ class TestDownload:
         if as_paths:
             assert all(Path in type(r[0]).__bases__ for r in response) is True
         else:
-            assert all(type(r[0]) == str for r in response) is True
+            assert all(type(r[0]) is str for r in response) is True
 
     @pytest.mark.parametrize('prefix,folder,as_paths', [
         ("test_prefix", "test_folder", False),
@@ -165,4 +163,4 @@ class TestDownload:
     def test_download_not_enough_arguments(self):
 
         with pytest.raises(ValueError):
-            download_keys_to_files(BUCKET_NAME, self.download, extra_args_per_key=[{'arg': 'value'}])
+            download_keys_to_files(BUCKET_NAME, self.download, extra_args_per_key=[{'arg': 'value'}])  # type: ignore

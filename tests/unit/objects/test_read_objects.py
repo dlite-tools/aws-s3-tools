@@ -1,20 +1,18 @@
-"""Unit tests for read.py"""
-from pathlib import Path
+"""Unit tests for read module."""
 import json
+from pathlib import Path
 
+import pytest
 from botocore.exceptions import ClientError
-
 from s3_tools import (
     read_object_to_bytes,
     read_object_to_dict,
     read_object_to_text,
 )
-import pytest
-
 from tests.unit.conftest import (
     BUCKET_NAME,
-    create_bucket,
     EMPTY_FILE,
+    create_bucket,
 )
 
 

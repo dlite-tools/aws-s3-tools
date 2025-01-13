@@ -1,21 +1,10 @@
-"""Unit tests for delete.py"""
+"""Unit tests for delete module."""
 from pathlib import Path
 
 import pytest
 from botocore.exceptions import ClientError
-
-from s3_tools import (
-    delete_keys,
-    delete_object,
-    delete_prefix,
-    object_exists
-)
-
-from tests.unit.conftest import (
-    create_bucket,
-    BUCKET_NAME,
-    FILENAME
-)
+from s3_tools import delete_keys, delete_object, delete_prefix, object_exists
+from tests.unit.conftest import BUCKET_NAME, FILENAME, create_bucket
 
 
 class TestDelete:

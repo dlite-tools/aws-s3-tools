@@ -1,13 +1,9 @@
-"""Unit tests for utils.py"""
+"""Unit tests for utils module."""
 import builtins
 from concurrent import futures
 
 import pytest
-
-from s3_tools.utils import (
-    _create_progress_bar,
-    _get_future_output
-)
+from s3_tools.utils import _create_progress_bar, _get_future_output
 
 
 @pytest.fixture

@@ -1,13 +1,12 @@
 """List S3 bucket objects."""
+import fnmatch
 from pathlib import Path
 from typing import (
     Dict,
-    Optional,
     List,
+    Optional,
     Union,
 )
-
-import fnmatch
 
 import boto3
 

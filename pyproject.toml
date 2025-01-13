@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aws-s3-tools"
-version = "0.3.0"
+version = "0.3.1"
 description = "AWS S3 tools package"
 authors = ["Daniel Ferrari"]
 maintainers = ["Daniel Ferrari, Carlos Alves, Tomás Osório"]
@@ -24,18 +24,18 @@ classifiers = [
     "License :: Freely Distributable",
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Utilities"
 ]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-boto3 = "^1.25"
+boto3 = "^1.35"
 ujson = "^5"
 rich = {version = "^13", optional = true}
 
@@ -43,18 +43,63 @@ rich = {version = "^13", optional = true}
 progress = ["rich"]
 
 [tool.poetry.group.dev.dependencies]
-flake8 = "*"
-moto = "*"
+moto = {extras = ["s3"], version = "*"}
 mypy = "*"
-pydocstyle = "*"
 pytest = "*"
 pytest-cov = "*"
-toml = "*"
-sphinx-rtd-theme = "*"
-sphinx = "*"
 requests = "*"
+ruff = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
+toml = "*"
 types-requests = "*"
 types-ujson = "*"
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+target-version = "py311"
+src = ["s3_tools", "tests/unit"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint]
+select = [
+    "D",     # docstring
+    "F",     # flake8
+    "E",     # pycodestyle
+    "W",     # pycodestyle
+    "I001",  # isort
+    "C90",   # mccabe (complexity)
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "D104"]
+"test_*.py" = ["D10"]
+"conftest.py" = ["D10"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_unused_configs = true
+check_untyped_defs = true
+allow_redefinition = true
+strict_optional = false
+
+[tool.pytest.ini_options]
+filterwarnings = "ignore::DeprecationWarning"
+
+[tool.coverage.run]
+branch = true
+source = ["s3_tools"]
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]

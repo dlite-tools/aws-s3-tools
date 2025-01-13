@@ -1,19 +1,17 @@
-"""Unit tests for move.py"""
+"""Unit tests for move module."""
 from pathlib import Path
 
 import pytest
 from botocore.exceptions import ClientError
-
 from s3_tools import (
     move_keys,
     move_object,
     object_exists,
 )
-
 from tests.unit.conftest import (
-    create_bucket,
     BUCKET_NAME,
     FILENAME,
+    create_bucket,
 )
 
 

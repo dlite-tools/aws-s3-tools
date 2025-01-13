@@ -1,6 +1,6 @@
 """Move S3 objects."""
-from pathlib import Path
 from concurrent import futures
+from pathlib import Path
 from typing import (
     Dict,
     List,
