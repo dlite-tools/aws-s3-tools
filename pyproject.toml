@@ -1,23 +1,19 @@
-[tool.poetry]
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project]
 name = "aws-s3-tools"
 version = "0.3.1"
 description = "AWS S3 tools package"
-authors = ["Daniel Ferrari"]
-maintainers = ["Daniel Ferrari, Carlos Alves, Tomás Osório"]
-license = "MIT"
-
 readme = "README.md"
-
-packages = [
-    { include = "s3_tools" }
+requires-python = "<4.0,>=3.8"
+authors = [
+    {name = "Daniel Ferrari"},
 ]
-
-homepage = "https://github.com/dlite-tools/aws-s3-tools"
-repository = "https://github.com/dlite-tools/aws-s3-tools"
-documentation = "https://aws-s3-tools.readthedocs.io/en/latest/index.html"
-
-keywords = ["aws", "s3", "tools", "package"]
-
+maintainers = [
+    {name = "Daniel Ferrari, Carlos Alves, Tomás Osório"},
+]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -30,30 +26,47 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Utilities"
+    "Topic :: Utilities",
+]
+keywords = [
+    "aws",
+    "s3",
+    "tools",
+    "package",
+]
+license = {text = "MIT"}
+dependencies = [
+    "boto3<2.0,>=1.35",
+    "ujson<6,>=5",
 ]
 
-[tool.poetry.dependencies]
-python = "^3.8"
-boto3 = "^1.35"
-ujson = "^5"
-rich = {version = "^13", optional = true}
+[project.urls]
+homepage = "https://github.com/dlite-tools/aws-s3-tools"
+repository = "https://github.com/dlite-tools/aws-s3-tools"
+documentation = "https://aws-s3-tools.readthedocs.io/en/latest/index.html"
 
-[tool.poetry.extras]
-progress = ["rich"]
+[project.optional-dependencies]
+progress = [
+    "rich<14,>=13",
+]
 
-[tool.poetry.group.dev.dependencies]
-moto = {extras = ["s3"], version = "*"}
-mypy = "*"
-pytest = "*"
-pytest-cov = "*"
-requests = "*"
-ruff = "*"
-sphinx = "*"
-sphinx-rtd-theme = "*"
-toml = "*"
-types-requests = "*"
-types-ujson = "*"
+[dependency-groups]
+dev = [
+    "moto[s3]",
+    "mypy",
+    "pytest",
+    "pytest-cov",
+    "requests",
+    "ruff",
+    "sphinx",
+    "sphinx-rtd-theme",
+    "toml",
+    "types-requests",
+    "types-ujson",
+]
+
+[tool.pdm.build]
+includes = ["s3_tools"]
 
 [tool.ruff]
 line-length = 120
@@ -100,10 +113,6 @@ filterwarnings = "ignore::DeprecationWarning"
 [tool.coverage.run]
 branch = true
 source = ["s3_tools"]
-
-[build-system]
-requires = ["poetry_core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
 
 [tool.aws-s3-tools]
 copyright = "2021, Daniel Ferrari"
