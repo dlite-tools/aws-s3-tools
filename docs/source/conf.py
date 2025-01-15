@@ -20,14 +20,14 @@ sys.path.insert(0, os.path.abspath('../..'))
 # -- Project information -----------------------------------------------------
 
 with open('../../pyproject.toml') as f:
-    parsed = toml.load(f)
+    pyproject = toml.load(f)
 
-project = parsed['tool']['poetry']['name']
-copyright = parsed['tool']['aws-s3-tools']['copyright']
-author = parsed['tool']['poetry']['authors'][0]
+project = pyproject['project']['name']
+copyright = pyproject['tool']['aws-s3-tools']['copyright']
+author = pyproject['project']['authors'][0]['name']
 
 # The full version, including alpha/beta/rc tags
-release = parsed['tool']['poetry']['version']
+release = pyproject['project']['version']
 
 
 # -- General configuration ---------------------------------------------------
