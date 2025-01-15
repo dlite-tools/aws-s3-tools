@@ -18,10 +18,10 @@ own work environment.
 
 To create an isolated development environment:
 
-* Install [Poetry](https://python-poetry.org/)
+* Install [uv](https://docs.astral.sh/uv/)
 * Make sure that you have cloned the repository
 * Go to the project source directory
-* Build environment. Run `poetry install`
+* Build environment. Run `uv sync`
 
 ### Run the test suite locally
 
