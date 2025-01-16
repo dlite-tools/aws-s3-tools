@@ -7,6 +7,9 @@ on:
     branches:
       - main
 
+env:
+  UV_SYSTEM_PYTHON: 1
+
 jobs:
 
   coverage:
@@ -22,11 +25,13 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: Install Poetry
-      run: pip install poetry==1.8.3
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        version: "0.5.18"
 
     - name: Install all dependencies
-      run: poetry install -E progress
+      run: uv sync --extra progress
 
     - name: Run Coverage
       run: make coverage
@@ -55,16 +60,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v5
       with:
+        version: "0.5.18"
         python-version: ${{ matrix.python-version }}
 
-    - name: Install Poetry
-      run: pip install poetry==1.8.3
-
     - name: Install dependencies
-      run: poetry install
+      run: uv sync
 
     - name: Static tests
       run: make static-tests
@@ -74,5 +77,5 @@ jobs:
 
     - name: Unit tests with extra dependencies
       run: |
-        poetry install -E progress
+        uv sync --extra progress
         make unit-tests

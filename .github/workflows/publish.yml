@@ -1,4 +1,4 @@
-# This workflow will publish a AWS S3 Tools Package using Poetry when a release is created
+# This workflow will publish a AWS S3 Tools Package when a release is created
 
 name: Publish
 
@@ -21,15 +21,17 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: Install Poetry
-      run: pip install poetry==1.8.3
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        version: "0.5.18"
 
     - name: Install dependencies
-      run: poetry install
+      run: uv sync
 
     - name: Build and publish
       env:
-        PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
       run: |
-        poetry config pypi-token.pypi $PYPI_TOKEN
-        poetry publish --build
+        uv build
+        uv publish
