@@ -11,6 +11,8 @@ coverage.xml
 junit.xml
 .pytest_cache/
 .mypy_cache/
+.ruff_cache
+.pdm-build
 
 # Sphinx documentation
 docs/_build/

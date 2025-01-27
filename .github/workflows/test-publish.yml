@@ -1,0 +1,38 @@
+name: Test Publish
+
+on:
+  workflow_dispatch:
+
+env:
+  UV_SYSTEM_PYTHON: 1
+
+jobs:
+
+  publish:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        version: "0.5.18"
+
+    - name: Install all dependencies
+      run: uv sync --extra progress
+
+    - name: Test publish to PyPI
+      env:
+        UV_PUBLISH_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
+        UV_PUBLISH_URL: "https://test.pypi.org/legacy/"
+      run: |
+        uv build
+        uv publish
