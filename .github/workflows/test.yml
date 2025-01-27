@@ -51,14 +51,6 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         verbose: true
 
-    - name: Test publish to PyPI
-      env:
-        UV_PUBLISH_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
-        UV_PUBLISH_URL: "https://test.pypi.org/legacy/"
-      run: |
-        uv build
-        uv publish
-
   python-checks:
 
     runs-on: ubuntu-latest
